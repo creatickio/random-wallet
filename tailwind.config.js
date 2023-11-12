@@ -22,6 +22,7 @@ module.exports = {
         gray: "#F0F0F0",
         lightlightGray: "#F6F7F8",
         text: "#3C4049",
+        border: "#EBECEE",
       },
     },
   },
