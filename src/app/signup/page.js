@@ -1,7 +1,33 @@
+"use client";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 function Signup() {
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const supabase = createClientComponentClient();
+
+  async function SignUpNewUser(e) {
+    e.preventDefault();
+    const { data: user, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        emailRedirectTo: "/dashboard",
+        data: {
+          first_name: name,
+          last_name: surname,
+        },
+      },
+    });
+    console.log(error);
+    console.log(user);
+  }
+
   return (
     <div className="flex">
       {/* Form */}
@@ -14,7 +40,7 @@ function Signup() {
             Get started now by creating a new account.
           </p>
         </div>
-        <form className="w-full flex flex-col gap-6">
+        <form onSubmit={SignUpNewUser} className="w-full flex flex-col gap-6">
           {/* First name last name */}
           <div className="flex gap-2 w-full">
             <div className="flex flex-col w-full">
@@ -26,6 +52,7 @@ function Signup() {
                 name="firstName"
                 id="firstName"
                 required
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
                 className="border border-slate-200 p-4 rounded-lg"
               />
@@ -39,6 +66,7 @@ function Signup() {
                 name="lastName"
                 id="lastName"
                 required
+                onChange={(e) => setSurname(e.target.value)}
                 placeholder="Enter your surname"
                 className="border border-slate-200 p-4 rounded-lg"
               />
@@ -54,6 +82,7 @@ function Signup() {
               name="email"
               id="email"
               required
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="border border-slate-200 p-4 rounded-lg"
             />
@@ -68,6 +97,7 @@ function Signup() {
               name="password"
               id="password"
               required
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="border border-slate-200 p-4 rounded-lg"
             />

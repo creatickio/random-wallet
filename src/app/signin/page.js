@@ -1,7 +1,29 @@
+"use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../supabaseClient";
 
 function Signin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const router = useRouter();
+
+  async function handleSignIn(e) {
+    e.preventDefault();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+    if (error) {
+      console.log("Error signing in:", error.message);
+    } else {
+      console.log("Signed in successfully!");
+      router.push("/dashboard");
+    }
+  }
+
   return (
     <div className="flex">
       {/* Form */}
@@ -23,6 +45,8 @@ function Signin() {
               name="email"
               id="email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="border border-slate-200 p-4 rounded-lg"
             />
@@ -37,6 +61,8 @@ function Signin() {
               name="password"
               id="password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="border border-slate-200 p-4 rounded-lg"
             />
@@ -46,7 +72,10 @@ function Signin() {
             Forgot password?
           </Link>
 
-          <button className="bg-[#202020] rounded-full text-lg font-medium text-white w-full p-4 hover:opacity-90 transition">
+          <button
+            onClick={handleSignIn}
+            className="bg-[#202020] rounded-full text-lg font-medium text-white w-full p-4 hover:opacity-90 transition"
+          >
             Sign in
           </button>
         </form>

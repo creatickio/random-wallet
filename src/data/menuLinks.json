@@ -1,0 +1,22 @@
+[
+  {
+    "title": "About",
+    "link": "#aboutus"
+  },
+  {
+    "title": "Why choose us?",
+    "link": "#whychooseus"
+  },
+  {
+    "title": "How it works?",
+    "link": "#howitworks"
+  },
+  {
+    "title": "Contact us",
+    "link": "#contactus"
+  },
+  {
+    "title": "FAQ",
+    "link": "#faq"
+  }
+]
