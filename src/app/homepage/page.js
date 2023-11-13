@@ -3,6 +3,9 @@ import Nav from "@/components/nav/page";
 import Link from "next/link";
 import { supabase } from "../supabaseClient";
 import Image from "next/image";
+import Nossr from "@/components/crypto/nossr";
+import Layout from "@/components/crypto/layout";
+import Ticker from "@/components/crypto/ticker";
 
 export default async function Homepage() {
   let { data: settings, error } = await supabase.from("settings").select("*");
@@ -35,9 +38,15 @@ export default async function Homepage() {
           <div className="mt-8 flex gap-2 flex-col items-center">
             <Link
               href="/signup"
-              className="bg-yellow rounded-full px-8 py-4 w-fit hover:bg-primary transition duration-300"
+              className="bg-yellow flex gap-4 rounded-full px-8 py-4 w-fit hover:bg-primary transition duration-300"
             >
-              Register now
+              Register now{" "}
+              <Image
+                src="/assets/icons/chevron-right.svg"
+                alt="chevron-right"
+                width={10}
+                height={16}
+              />
             </Link>
             <p className="text-[#585D69] font-light text-xs">
               Sign up process takes 2 minutes.
@@ -86,7 +95,7 @@ export default async function Homepage() {
       </div>
 
       {/* Discover real-time crypto data */}
-      <div className="py-[150px] flex items-center justify-center text-center rounded-lg border border-border">
+      <div className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border">
         {/* head */}
         <div className="max-w-4xl">
           <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
@@ -101,6 +110,11 @@ export default async function Homepage() {
         </div>
 
         {/* List of cryptos */}
+        <div className="w-full px-28">
+          <Nossr>
+            <Ticker />
+          </Nossr>
+        </div>
       </div>
 
       {/* About us */}
@@ -182,6 +196,22 @@ export default async function Homepage() {
               to Random-Wallet - where your financial success begins.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Why choose us */}
+      <div className="py-[150px] flex items-center justify-center text-center rounded-lg border border-border">
+        {/* head */}
+        <div className="flex flex-col gap-2">
+          <p className="text-base text-text font-light">
+            Experience the Random-Wallet Advantage
+          </p>
+          <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+            Why
+            <span className="bg-yellow py-2 px-3 mx-3 rounded-md">
+              choose us?
+            </span>
+          </h2>
         </div>
       </div>
     </div>
