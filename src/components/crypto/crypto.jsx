@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { memo } from "react";
 
-import Loader from "./Loader";
-import Status from "./Status";
+import Loader from "./loader";
+import Status from "./status";
 import { formatPrice } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";

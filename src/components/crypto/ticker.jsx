@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-import Crypto from "./Crypto";
+import Crypto from "./crypto";
 import useTicker from "@/utils/hooks";
 
 export default function Ticker() {
