@@ -5,12 +5,16 @@ import { supabase } from "../supabaseClient";
 import Image from "next/image";
 import Nossr from "@/components/crypto/nossr";
 import Ticker from "@/components/crypto/ticker";
+import FAQ from "@/components/faq/page";
+
+// Import data
 import { whychooseusData } from "@/data/whychooseusData";
+import { faqData } from "@/data/faqData";
 
 export default async function Homepage() {
   let { data: settings, error } = await supabase.from("settings").select("*");
 
-  console.log(settings);
+  console.log(settings[0]);
   return (
     <div className="flex flex-col gap-2 p-2">
       <Nav />
@@ -235,6 +239,116 @@ export default async function Homepage() {
               <p className="text-text text-xl font-light">{item.description}</p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Contact our friendly team */}
+      <div className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border">
+        {/* head */}
+        <div className="flex flex-col gap-2">
+          <p className="text-base text-text font-light">
+            Let us know how we can help
+          </p>
+          <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+            Contact our
+            <span className="bg-yellow py-2 px-3 mx-3 rounded-md">
+              friendly team
+            </span>
+          </h2>
+        </div>
+        {/* three contact options */}
+        <div className="grid grid-cols-3 w-full px-[150px] gap-6">
+          {/* Item */}
+          <div className="border border-border rounded-2xl flex flex-col items-start gap-8 p-10 shadow-sm w-full">
+            <div className="h-14 w-14 rounded-full bg-lightlightGray flex items-center justify-center">
+              <Image
+                src="/assets/icons/location-dot.svg"
+                height={24}
+                width={24}
+                alt="Location"
+              />
+            </div>
+            <div className="flex flex-col gap-3 items-start">
+              <h3 className="text-[32px] font-medium text-darkBlack tracking-tight">
+                Visit us
+              </h3>
+              <p className="text-xl font-light text-text">
+                Visit our office HQ.
+              </p>
+            </div>
+            <Link
+              href={`https://www.google.com/maps/place/${settings[0].location}`}
+              target="_blank"
+              className="text-xl text-text font-bold underline"
+            >
+              {settings[0].location}
+            </Link>
+          </div>
+          {/* Item */}
+          <div className="border border-border rounded-2xl flex flex-col items-start gap-8 p-10 shadow-sm w-full">
+            <div className="h-14 w-14 rounded-full bg-lightlightGray flex items-center justify-center">
+              <Image
+                src="/assets/icons/envelope.svg"
+                height={24}
+                width={24}
+                alt="Email"
+              />
+            </div>
+            <div className="flex flex-col gap-3 items-start">
+              <h3 className="text-[32px] font-medium text-darkBlack tracking-tight">
+                Send us an email
+              </h3>
+              <p className="text-xl font-light text-text">
+                We&apos;re here to help.
+              </p>
+            </div>
+            <Link
+              href={`mailto:${settings[0].email}`}
+              target="_blank"
+              className="text-xl text-text font-bold underline"
+            >
+              {settings[0].email}
+            </Link>
+          </div>
+          {/* Item */}
+          <div className="border border-border rounded-2xl flex flex-col items-start gap-8 p-10 shadow-sm w-full">
+            <div className="h-14 w-14 rounded-full bg-lightlightGray flex items-center justify-center">
+              <Image
+                src="/assets/icons/phone.svg"
+                height={24}
+                width={24}
+                alt="Phone"
+              />
+            </div>
+            <div className="flex flex-col gap-3 items-start">
+              <h3 className="text-[32px] font-medium text-darkBlack tracking-tight">
+                Call us
+              </h3>
+              <p className="text-xl font-light text-text">
+                Mon-Fri from 8am to 5pm
+              </p>
+            </div>
+            <Link
+              href={`tel:${settings[0].phone_number}`}
+              target="_blank"
+              className="text-xl text-text font-bold underline"
+            >
+              {settings[0].phone_number}
+            </Link>
+          </div>
+        </div>
+
+        {/* Frequently Asked Questions */}
+        <div className="w-full flex flex-col gap-16 items-center pt-16">
+          <h3 className="font-medium text-darkBlack text-[40px] tracking-tight">
+            Frequently asked questions
+          </h3>
+          {/* FAQ */}
+          <div className="w-5/12 flex flex-col gap-6">
+            {faqData.map((item, i) => (
+              <FAQ key={i} question={item.question} answer={item.answer} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
