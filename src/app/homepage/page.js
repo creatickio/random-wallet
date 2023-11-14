@@ -4,8 +4,8 @@ import Link from "next/link";
 import { supabase } from "../supabaseClient";
 import Image from "next/image";
 import Nossr from "@/components/crypto/nossr";
-import Layout from "@/components/crypto/layout";
 import Ticker from "@/components/crypto/ticker";
+import { whychooseusData } from "@/data/whychooseusData";
 
 export default async function Homepage() {
   let { data: settings, error } = await supabase.from("settings").select("*");
@@ -200,7 +200,7 @@ export default async function Homepage() {
       </div>
 
       {/* Why choose us */}
-      <div className="py-[150px] flex items-center justify-center text-center rounded-lg border border-border">
+      <div className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border">
         {/* head */}
         <div className="flex flex-col gap-2">
           <p className="text-base text-text font-light">
@@ -212,6 +212,29 @@ export default async function Homepage() {
               choose us?
             </span>
           </h2>
+        </div>
+
+        {/* Content */}
+        <div className="grid grid-cols-3 px-24 gap-6">
+          {whychooseusData.map((item, i) => (
+            <div
+              className="p-10 rounded-2xl shadow-sm border border-border text-center flex flex-col items-center gap-3"
+              key={i}
+            >
+              <div className="w-14 h-14 rounded-full bg-lightlightGray flex items-center justify-center mb-5">
+                <Image
+                  src={item.icon}
+                  height={24}
+                  width={24}
+                  alt={item.title}
+                />
+              </div>
+              <h3 className="font-medium text-[32px] text-darkBlack tracking-tight">
+                {item.title}
+              </h3>
+              <p className="text-text text-xl font-light">{item.description}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
