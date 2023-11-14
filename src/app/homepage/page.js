@@ -10,13 +10,14 @@ import FAQ from "@/components/faq/page";
 // Import data
 import { whychooseusData } from "@/data/whychooseusData";
 import { faqData } from "@/data/faqData";
+import { howitworksData } from "@/data/howitworksData";
 
 export default async function Homepage() {
   let { data: settings, error } = await supabase.from("settings").select("*");
 
   console.log(settings[0]);
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-2 p-2 scroll-smooth">
       <Nav />
       {/* Hero section */}
       <div
@@ -122,7 +123,7 @@ export default async function Homepage() {
       </div>
 
       {/* About us */}
-      <div className="border border-border rounded-lg pb-[150px]">
+      <div className="border border-border rounded-lg pb-[150px]" id="aboutus">
         {/* top */}
         <div
           className="flex flex-col justify-between items-center pt-[150px] pb-[210px] bg-gray px-[100px] relative"
@@ -204,7 +205,10 @@ export default async function Homepage() {
       </div>
 
       {/* Why choose us */}
-      <div className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border">
+      <div
+        className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border"
+        id="whychooseus"
+      >
         {/* head */}
         <div className="flex flex-col gap-2">
           <p className="text-base text-text font-light">
@@ -242,8 +246,73 @@ export default async function Homepage() {
         </div>
       </div>
 
+      {/* How it works */}
+      <div
+        className="flex flex-row gap-28 justify-between py-[150px] bg-gray px-[100px] relative rounded-lg"
+        id="howitworks"
+        style={{ backgroundImage: `url('/assets/dotted-svg.svg')` }}
+      >
+        {/* left */}
+        <div className="flex flex-col justify-between w-5/12">
+          {/* head */}
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+              <p className="text-base text-text font-light">
+                Getting started with Random-Wallet
+              </p>
+              <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+                How
+                <span className="bg-yellow py-2 px-3 mx-3 rounded-md block w-fit -ml-2">
+                  it works?
+                </span>
+              </h2>
+            </div>
+            <p className="text-2xl font-light text-text">
+              Mastering the art of cryptocurrency trading: A step-by-step guide
+              to navigating the Random-Wallet platform and executing profitable
+              trades
+            </p>
+          </div>
+          {/* button */}
+          <Link
+            href="/signup"
+            className="bg-darkBlack text-white flex gap-4 rounded-full px-8 py-4 w-fit hover:bg-primary transition duration-300"
+          >
+            Register now{" "}
+            <Image
+              src="/assets/icons/chevron-right-white.svg"
+              alt="chevron-right"
+              width={10}
+              height={16}
+            />
+          </Link>
+        </div>
+
+        {/* right */}
+        <div className="grid grid-cols-2 gap-8 w-7/12">
+          {howitworksData.map((item, i) => (
+            <div key={i} className="flex flex-col gap-6">
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-darkBlack font-bold text-[28px]">
+                {i + 1}
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-2xl text-darkBlack font-medium">
+                  {item.title}
+                </h5>
+                <p className="text-lg text-text font-light">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Contact our friendly team */}
-      <div className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border">
+      <div
+        className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border"
+        id="contactus"
+      >
         {/* head */}
         <div className="flex flex-col gap-2">
           <p className="text-base text-text font-light">
@@ -339,7 +408,10 @@ export default async function Homepage() {
         </div>
 
         {/* Frequently Asked Questions */}
-        <div className="w-full flex flex-col gap-16 items-center pt-16">
+        <div
+          className="w-full flex flex-col gap-16 items-center pt-16"
+          id="faq"
+        >
           <h3 className="font-medium text-darkBlack text-[40px] tracking-tight">
             Frequently asked questions
           </h3>
