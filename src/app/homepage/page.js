@@ -276,7 +276,7 @@ export default async function Homepage() {
           {/* button */}
           <Link
             href="/signup"
-            className="bg-darkBlack text-white flex gap-4 rounded-full px-8 py-4 w-fit hover:bg-primary transition duration-300"
+            className="bg-darkBlack text-white flex gap-4 rounded-full px-8 py-4 w-fit hover:bg-darkGray transition duration-300"
           >
             Register now{" "}
             <Image
@@ -423,6 +423,135 @@ export default async function Homepage() {
           </div>
         </div>
       </div>
+
+      {/* CTA */}
+      <div
+        className="flex flex-row items-center gap-28 justify-between py-[150px] px-[100px] my-[50px] bg-gray mx-[150px] relative rounded-lg"
+        id="howitworks"
+        style={{ backgroundImage: `url('/assets/dotted-svg.svg')` }}
+      >
+        {/* left */}
+        <div className="flex flex-col justify-between gap-8 w-6/12">
+          {/* head */}
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+              <p className="text-base text-text font-light">
+                Invest for the future
+              </p>
+              <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+                Get the most out of your
+                <span className="bg-yellow py-2 px-3 mx-3 rounded-md">
+                  investments
+                </span>
+              </h2>
+            </div>
+            <p className="text-2xl font-light text-text">
+              Begin your journey to financial success in the cryptocurrency
+              market. Join Random-Wallet today and access real-time data, expert
+              resources, and a user-friendly platform. Click &apos;Register
+              now&apos; and unlock the potential of digital assets with a
+              trusted partner by your side.
+            </p>
+          </div>
+          {/* button */}
+          <Link
+            href="/signup"
+            className="bg-darkBlack text-white flex gap-4 rounded-full px-8 py-4 w-fit hover:bg-darkGray transition duration-300"
+          >
+            Register now{" "}
+            <Image
+              src="/assets/icons/chevron-right-white.svg"
+              alt="chevron-right"
+              width={10}
+              height={16}
+            />
+          </Link>
+        </div>
+
+        {/* right */}
+        <div className="w-6/12">
+          <Image
+            src="/assets/cryptos-desktop.svg"
+            width={540}
+            height={420}
+            alt="List of cryptos"
+          />
+        </div>
+      </div>
+
+      {/* footer */}
+      <footer className="py-[50px] bg-darkBlack text-white rounded-lg flex flex-col gap-[50px] px-[150px] text-sm">
+        {/* top */}
+        <div className="flex flex-col gap-8 items-center justify-center">
+          <div className="py-4 px-8 bg-darkBlack border border-border font-medium text-lg flex items-center justify-center w-fit rounded-lg">
+            {settings[0].company_name}
+          </div>
+          <h4 className="text-4xl w-5/12 text-center">
+            Create your own crypto wallet and take control of your assets.
+          </h4>
+        </div>
+
+        {/* bottom */}
+        <div className="pt-[50px] border-t border-white/10 flex justify-between items-center">
+          <p>{settings[0].company_name} © 2023. All rights reserved.</p>
+
+          {/* contact info */}
+          <ul className="flex gap-8">
+            <li>
+              <Link
+                href={`tel: ${settings[0].phone_number}`}
+                className="rounded-full bg-white/5 border border-white/10 py-3 px-4 flex flex-row items-center gap-2"
+              >
+                <Image
+                  src="/assets/icons/phone-white.svg"
+                  alt="Phone"
+                  height={16}
+                  width={16}
+                />
+                {settings[0].phone_number}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={`mailto:${settings[0].email}`}
+                className="rounded-full bg-white/5 border border-white/10 py-3 px-4 flex flex-row items-center gap-2"
+              >
+                <Image
+                  src="/assets/icons/envelope-white.svg"
+                  alt="Email"
+                  height={16}
+                  width={16}
+                />
+                {settings[0].email}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={`https://www.google.com/maps/place/${settings[0].location}`}
+                className="rounded-full bg-white/5 border border-white/10 py-3 px-4 flex flex-row items-center gap-2"
+              >
+                <Image
+                  src="/assets/icons/location-dot-white.svg"
+                  alt="Location"
+                  height={14}
+                  width={14}
+                />
+                {settings[0].location}
+              </Link>
+            </li>
+          </ul>
+
+          {/* TOS links */}
+          <ul className="flex gap-4">
+            <li className="underline">
+              <Link href="/tos">Terms of Services</Link>
+            </li>
+            <li className="underline">
+              <Link href="/privacy-policy">Privacy Policy</Link>
+            </li>
+          </ul>
+        </div>
+      </footer>
     </div>
   );
 }
