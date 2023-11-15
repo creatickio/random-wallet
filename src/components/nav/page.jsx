@@ -10,7 +10,7 @@ function Nav() {
   return (
     <>
       {/* Top Bar */}
-      <div className="flex items-center justify-center bg-primary font-light text-darkBlack rounded-lg p-4 gap-1">
+      <div className="md:flex md:flex-col lg:flex lg:flex-row items-center justify-center bg-primary font-light text-darkBlack rounded-lg p-4 gap-1">
         <p>
           Registrations are now open. Go ahead and create your account.
           We&apos;ll be right there to help you.
@@ -24,7 +24,7 @@ function Nav() {
         {/* Logo */}
         <Logo />
         {/* Menu */}
-        <ul className="flex gap-8">
+        <ul className="lg:flex gap-8 hidden">
           {menuLinks.map((item, i) => (
             <li key={i}>
               <Link

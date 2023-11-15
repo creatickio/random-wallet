@@ -14,7 +14,7 @@ function Crypto({ crypto }) {
       : "text-red-500 text-[21px] font-light"
     : "text-darkBlack text-[21px] font-light";
   return (
-    <div className="max-w p-12 bg-lightlightGray text-darkBlack border border-border rounded-xl">
+    <div className="max-w md:p-8 lg:p-12 bg-lightlightGray text-darkBlack border border-border rounded-xl">
       {/* top */}
       <div className="flex justify-between">
         <div className="flex gap-3">
@@ -28,7 +28,7 @@ function Crypto({ crypto }) {
           />
           {/* Crypto name and price */}
           <div className="flex flex-col items-start">
-            <h5 className="text-darkBlack text-[27px] font-medium">
+            <h5 className="text-darkBlack md:text-2xl lg:text-[27px] font-medium">
               {crypto.name}
             </h5>
             {crypto.price ? (
@@ -46,7 +46,7 @@ function Crypto({ crypto }) {
         </div>
         {/* explorer link */}
         <Link
-          className="flex items-center justify-center bg-lightGray w-[70px] h-[70px] rounded-xl"
+          className="flex items-center justify-center bg-lightGray md:w-16 md:h-16 lg:w-[70px] lg:h-[70px] rounded-xl"
           href={crypto.explorer}
           target="_blank"
           rel="noreferrer"

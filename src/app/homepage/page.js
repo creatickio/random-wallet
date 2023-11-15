@@ -21,21 +21,21 @@ export default async function Homepage() {
       <Nav />
       {/* Hero section */}
       <div
-        className="w-full bg-gray rounded-lg border border-border text-center py-32 relative overflow-hidden"
+        className="w-full bg-gray rounded-lg border border-border text-center md:py-44 lg:py-32 relative overflow-hidden"
         style={{ backgroundImage: `url('/assets/dotted-svg.svg')` }}
       >
-        <div className="max-w-screen-lg mx-auto z-50">
+        <div className="max-w-screen-lg mx-auto z-50 md:px-8 lg:px-0 relative">
           <p className="text-[#3C4049] font-light text-base mb-2">
             55,000+ Active Users
           </p>
-          <h1 className="text-darkBlack font-medium text-7xl leading-tight tracking-tighter">
+          <h1 className="text-darkBlack font-medium md:text-6xl lg:text-7xl leading-tight tracking-tighter">
             Create your own{" "}
             <span className="bg-yellow py-2 px-3 rounded-md">
               crypto wallet
             </span>{" "}
             and take control of your assets.
           </h1>
-          <p className="text-2xl font-light leading-tight text-text mt-8">
+          <p className="md:text-xl lg:text-2xl font-light leading-tight text-text mt-8">
             Unlock the world of crypto trading with Random-Wallet: Your trusted
             partner for secure, convenient, and proficient cryptocurrency
             investments
@@ -67,7 +67,7 @@ export default async function Homepage() {
             alt="Income and Expense"
             width={264}
             height={222}
-            className="absolute top-[43px] left-2"
+            className="absolute md:-top-[96px] md:-left-[25px] lg:top-[43px] lg:left-2"
           />
 
           {/* Goals */}
@@ -76,7 +76,7 @@ export default async function Homepage() {
             alt="Income and Expense"
             width={264}
             height={167}
-            className="absolute bottom-[78px] -left-2"
+            className="absolute md:bottom-[33px] md:-left-6 lg:bottom-[78px] lg:-left-2"
           />
 
           {/* Total Revenue */}
@@ -85,7 +85,7 @@ export default async function Homepage() {
             alt="Income and Expense"
             width={264}
             height={153}
-            className="absolute top-[36px] -right-2"
+            className="absolute md:-top-[36px] md:-right-[194px] lg:top-[36px] lg:-right-2"
           />
 
           {/* Balance */}
@@ -94,28 +94,28 @@ export default async function Homepage() {
             alt="Income and Expense"
             width={264}
             height={223}
-            className="absolute bottom-[51px] right-[33px]"
+            className="absolute md:bottom-[51px] md:-right-[106px] lg:bottom-[51px] lg:right-[33px]"
           />
         </div>
       </div>
 
       {/* Discover real-time crypto data */}
-      <div className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border">
+      <div className="md:py-[100px] lg:py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border">
         {/* head */}
         <div className="max-w-4xl">
-          <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+          <h2 className="text-darkBlack font-medium md:text-5xl lg:text-[64px] leading-tight tracking-tight">
             Discover{" "}
             <span className="bg-yellow py-2 px-3 rounded-md">real-time</span>{" "}
             crypto data
           </h2>
-          <p className="text-2xl font-light leading-tight text-text mt-6">
+          <p className="md:text-xl lg:text-2xl font-light leading-tight text-text mt-6 md:w-10/12 md:mx-auto lg:w-full">
             Empower your crypto journey with real-time cryptocurrency data: Gain
             a competitive edge and stay ahead of market trends
           </p>
         </div>
 
         {/* List of cryptos */}
-        <div className="w-full px-28">
+        <div className="w-full md:px-8 lg:px-28">
           <Nossr>
             <Ticker />
           </Nossr>
@@ -123,16 +123,19 @@ export default async function Homepage() {
       </div>
 
       {/* About us */}
-      <div className="border border-border rounded-lg pb-[150px]" id="aboutus">
+      <div
+        className="border border-border rounded-lg md:pb-[100px] lg:pb-[150px]"
+        id="aboutus"
+      >
         {/* top */}
         <div
-          className="flex flex-col justify-between items-center pt-[150px] pb-[210px] bg-gray px-[100px] relative"
+          className="flex flex-col justify-between items-center md:pt-[100px] md:pb-[226px] lg:pt-[150px] lg:pb-[210px] bg-gray px-[100px] relative"
           style={{ backgroundImage: `url('/assets/dotted-svg.svg')` }}
         >
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-2 w-6/12">
+          <div className="flex md:flex-col md:gap-6 lg:flex-row justify-between items-center">
+            <div className="flex flex-col gap-2 md:w-full lg:w-6/12">
               <p className="text-base text-text font-light">Our Story</p>
-              <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+              <h2 className="text-darkBlack font-medium md:text-5xl lg:text-[64px] leading-tight tracking-tight">
                 Crafting
                 <span className="bg-yellow py-2 px-3 mx-2 rounded-md">
                   excellence
@@ -140,7 +143,7 @@ export default async function Homepage() {
                 in cryptocurrency services
               </h2>
             </div>
-            <div className="flex flex-col gap-6 w-6/12 text-2xl font-light text-text">
+            <div className="flex flex-col gap-6 md:w-full lg:w-6/12 md:text-xl lg:text-2xl font-light text-text">
               <p>
                 Discover the heart and soul of Random-Wallet: How our passion
                 for cryptocurrency drove us to create a platform for your
@@ -148,27 +151,26 @@ export default async function Homepage() {
               </p>
             </div>
           </div>
-          <div className="h-auto px-[100px] w-full absolute -bottom-52">
+          <div className="md:h-[388px] rounded-3xl lg:h-[388px] overflow-hidden md:w-10/12 lg:w-10/12 absolute -bottom-52">
             <Image
               src="/assets/btc-image.png"
               alt="btc-image"
-              height={388}
-              width={1000}
-              layout="responsive"
+              layout="fill"
+              objectFit="cover"
             />
           </div>
         </div>
 
         {/* bottom */}
-        <div className="flex justify-between mt-72 px-[100px]">
-          <div className="flex flex-col gap-2 w-6/12">
+        <div className="flex md:flex-col md:gap-6 lg:gap-0 lg:flex-row justify-between mt-72 px-[100px]">
+          <div className="flex flex-col gap-2 md:w-full lg:w-6/12">
             <p className="text-base text-text font-light">Who we are</p>
-            <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+            <h2 className="text-darkBlack font-medium md:text-5xl lg:text-[64px] leading-tight tracking-tight">
               About
               <span className="bg-yellow py-2 px-3 ml-2 rounded-md">us</span>
             </h2>
           </div>
-          <div className="flex flex-col gap-6 w-6/12 text-2xl font-light text-text">
+          <div className="flex flex-col gap-6 md:w-full lg:w-6/12 md:text-xl lg:text-2xl font-light text-text">
             <p>
               At Random-Wallet, we are more than just a cryptocurrency platform;
               we are a passionate community of blockchain enthusiasts dedicated
@@ -206,7 +208,7 @@ export default async function Homepage() {
 
       {/* Why choose us */}
       <div
-        className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border"
+        className="md:py-[100px] lg:py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border"
         id="whychooseus"
       >
         {/* head */}
@@ -214,7 +216,7 @@ export default async function Homepage() {
           <p className="text-base text-text font-light">
             Experience the Random-Wallet Advantage
           </p>
-          <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+          <h2 className="text-darkBlack font-medium md:text-5xl lg:text-[64px] leading-tight tracking-tight">
             Why
             <span className="bg-yellow py-2 px-3 mx-3 rounded-md">
               choose us?
@@ -223,7 +225,7 @@ export default async function Homepage() {
         </div>
 
         {/* Content */}
-        <div className="grid grid-cols-3 px-24 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 md:px-8 lg:px-24 gap-6">
           {whychooseusData.map((item, i) => (
             <div
               className="p-10 rounded-2xl shadow-sm border border-border text-center flex flex-col items-center gap-3"
@@ -237,10 +239,12 @@ export default async function Homepage() {
                   alt={item.title}
                 />
               </div>
-              <h3 className="font-medium text-[32px] text-darkBlack tracking-tight">
+              <h3 className="font-medium md:text-[28px] lg:text-[32px] text-darkBlack tracking-tight">
                 {item.title}
               </h3>
-              <p className="text-text text-xl font-light">{item.description}</p>
+              <p className="text-text md:text-lg lg:text-xl font-light">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>
@@ -248,26 +252,26 @@ export default async function Homepage() {
 
       {/* How it works */}
       <div
-        className="flex flex-row gap-28 justify-between py-[150px] bg-gray px-[100px] relative rounded-lg"
+        className="flex md:flex-col lg:flex-row gap-28 justify-between md:py-[100px] lg:py-[150px] bg-gray md:px-8 lg:px-[100px] relative rounded-lg"
         id="howitworks"
         style={{ backgroundImage: `url('/assets/dotted-svg.svg')` }}
       >
         {/* left */}
-        <div className="flex flex-col justify-between w-5/12">
+        <div className="flex flex-col justify-between md:w-full md:gap-11 lg:w-5/12 lg:gap-0">
           {/* head */}
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-2">
+          <div className="flex flex-col md:gap-6 lg:gap-8">
+            <div className="flex flex-col md:gap-4 lg:gap-2">
               <p className="text-base text-text font-light">
                 Getting started with Random-Wallet
               </p>
-              <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+              <h2 className="text-darkBlack font-medium md:text-5xl lg:text-[64px] leading-tight tracking-tight">
                 How
-                <span className="bg-yellow py-2 px-3 mx-3 rounded-md block w-fit -ml-2">
+                <span className="bg-yellow py-2 px-3 mx-3 rounded-md lg:block lg:w-fit lg:-ml-2">
                   it works?
                 </span>
               </h2>
             </div>
-            <p className="text-2xl font-light text-text">
+            <p className="md:text-xl lg:text-2xl font-light text-text">
               Mastering the art of cryptocurrency trading: A step-by-step guide
               to navigating the Random-Wallet platform and executing profitable
               trades
@@ -289,7 +293,7 @@ export default async function Homepage() {
         </div>
 
         {/* right */}
-        <div className="grid grid-cols-2 gap-8 w-7/12">
+        <div className="grid grid-cols-2 gap-8 md:w-full lg:w-7/12">
           {howitworksData.map((item, i) => (
             <div key={i} className="flex flex-col gap-6">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-darkBlack font-bold text-[28px]">
@@ -310,7 +314,7 @@ export default async function Homepage() {
 
       {/* Contact our friendly team */}
       <div
-        className="py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border"
+        className="md:py-[100px] lg:py-[150px] flex flex-col gap-16 items-center justify-center text-center rounded-lg border border-border"
         id="contactus"
       >
         {/* head */}
@@ -318,7 +322,7 @@ export default async function Homepage() {
           <p className="text-base text-text font-light">
             Let us know how we can help
           </p>
-          <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+          <h2 className="text-darkBlack font-medium md:text-5xl lg:text-[64px] leading-tight tracking-tight">
             Contact our
             <span className="bg-yellow py-2 px-3 mx-3 rounded-md">
               friendly team
@@ -326,7 +330,7 @@ export default async function Homepage() {
           </h2>
         </div>
         {/* three contact options */}
-        <div className="grid grid-cols-3 w-full px-[150px] gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full md:px-8 lg:px-[150px] gap-6">
           {/* Item */}
           <div className="border border-border rounded-2xl flex flex-col items-start gap-8 p-10 shadow-sm w-full">
             <div className="h-14 w-14 rounded-full bg-lightlightGray flex items-center justify-center">
@@ -338,17 +342,17 @@ export default async function Homepage() {
               />
             </div>
             <div className="flex flex-col gap-3 items-start">
-              <h3 className="text-[32px] font-medium text-darkBlack tracking-tight">
+              <h3 className="md:text-2xl lg:text-[32px] font-medium text-darkBlack tracking-tight">
                 Visit us
               </h3>
-              <p className="text-xl font-light text-text">
+              <p className="md:text-base lg:text-xl font-light text-text">
                 Visit our office HQ.
               </p>
             </div>
             <Link
               href={`https://www.google.com/maps/place/${settings[0].location}`}
               target="_blank"
-              className="text-xl text-text font-bold underline"
+              className="md:text-base lg:text-xl text-text font-bold underline"
             >
               {settings[0].location}
             </Link>
@@ -364,23 +368,23 @@ export default async function Homepage() {
               />
             </div>
             <div className="flex flex-col gap-3 items-start">
-              <h3 className="text-[32px] font-medium text-darkBlack tracking-tight">
+              <h3 className="md:text-2xl lg:text-[32px] font-medium text-darkBlack tracking-tight">
                 Send us an email
               </h3>
-              <p className="text-xl font-light text-text">
+              <p className="md:text-base lg:text-xl font-light text-text">
                 We&apos;re here to help.
               </p>
             </div>
             <Link
               href={`mailto:${settings[0].email}`}
               target="_blank"
-              className="text-xl text-text font-bold underline"
+              className="md:text-base lg:text-xl text-text font-bold underline"
             >
               {settings[0].email}
             </Link>
           </div>
           {/* Item */}
-          <div className="border border-border rounded-2xl flex flex-col items-start gap-8 p-10 shadow-sm w-full">
+          <div className="border border-border rounded-2xl flex flex-col items-start gap-8 p-10 shadow-sm w-full md:col-span-2 lg:col-span-1">
             <div className="h-14 w-14 rounded-full bg-lightlightGray flex items-center justify-center">
               <Image
                 src="/assets/icons/phone.svg"
@@ -390,17 +394,17 @@ export default async function Homepage() {
               />
             </div>
             <div className="flex flex-col gap-3 items-start">
-              <h3 className="text-[32px] font-medium text-darkBlack tracking-tight">
+              <h3 className="md:text-2xl lg:text-[32px] font-medium text-darkBlack tracking-tight">
                 Call us
               </h3>
-              <p className="text-xl font-light text-text">
+              <p className="md:text-base lg:text-xl font-light text-text">
                 Mon-Fri from 8am to 5pm
               </p>
             </div>
             <Link
               href={`tel:${settings[0].phone_number}`}
               target="_blank"
-              className="text-xl text-text font-bold underline"
+              className="md:text-base lg:text-xl text-text font-bold underline"
             >
               {settings[0].phone_number}
             </Link>
@@ -412,11 +416,11 @@ export default async function Homepage() {
           className="w-full flex flex-col gap-16 items-center pt-16"
           id="faq"
         >
-          <h3 className="font-medium text-darkBlack text-[40px] tracking-tight">
+          <h3 className="font-medium text-darkBlack md:text-4xl lg:text-[40px] tracking-tight">
             Frequently asked questions
           </h3>
           {/* FAQ */}
-          <div className="w-5/12 flex flex-col gap-6">
+          <div className="md:w-10/12 lg:w-5/12 flex flex-col gap-6">
             {faqData.map((item, i) => (
               <FAQ key={i} question={item.question} answer={item.answer} />
             ))}
@@ -426,26 +430,26 @@ export default async function Homepage() {
 
       {/* CTA */}
       <div
-        className="flex flex-row items-center gap-28 justify-between py-[150px] px-[100px] my-[50px] bg-gray mx-[150px] relative rounded-lg"
+        className="flex flex-row items-center md:gap-0 lg:gap-28 md:justify-center lg:justify-between md:py-[100px] lg:py-[150px] md:px-8 lg:px-[100px] my-[50px] bg-gray md:mx-8 lg:mx-[150px] relative rounded-3xl"
         id="howitworks"
         style={{ backgroundImage: `url('/assets/dotted-svg.svg')` }}
       >
         {/* left */}
-        <div className="flex flex-col justify-between gap-8 w-6/12">
+        <div className="flex flex-col justify-between gap-8 md:w-full md:text-center md:items-center lg:items-start lg:text-left lg:w-6/12">
           {/* head */}
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-2">
               <p className="text-base text-text font-light">
                 Invest for the future
               </p>
-              <h2 className="text-darkBlack font-medium text-[64px] leading-tight tracking-tight">
+              <h2 className="text-darkBlack font-medium md:text-5xl lg:text-[64px] lg:tracking-tight md:leading-snug">
                 Get the most out of your
                 <span className="bg-yellow py-2 px-3 mx-3 rounded-md">
                   investments
                 </span>
               </h2>
             </div>
-            <p className="text-2xl font-light text-text">
+            <p className="md:text-xl lg:text-2xl font-light text-text">
               Begin your journey to financial success in the cryptocurrency
               market. Join Random-Wallet today and access real-time data, expert
               resources, and a user-friendly platform. Click &apos;Register
@@ -469,30 +473,31 @@ export default async function Homepage() {
         </div>
 
         {/* right */}
-        <div className="w-6/12">
+        <div className="hidden lg:block lg:w-6/12">
           <Image
             src="/assets/cryptos-desktop.svg"
             width={540}
             height={420}
             alt="List of cryptos"
+            className="hidden lg:block"
           />
         </div>
       </div>
 
       {/* footer */}
-      <footer className="py-[50px] bg-darkBlack text-white rounded-lg flex flex-col gap-[50px] px-[150px] text-sm">
+      <footer className="py-[50px] bg-darkBlack text-white rounded-lg flex flex-col gap-[50px] md:px-8 lg:px-[150px] text-sm">
         {/* top */}
         <div className="flex flex-col gap-8 items-center justify-center">
           <div className="py-4 px-8 bg-darkBlack border border-border font-medium text-lg flex items-center justify-center w-fit rounded-lg">
             {settings[0].company_name}
           </div>
-          <h4 className="text-4xl w-5/12 text-center">
+          <h4 className="text-4xl md:w-full lg:w-5/12 text-center">
             Create your own crypto wallet and take control of your assets.
           </h4>
         </div>
 
         {/* bottom */}
-        <div className="pt-[50px] border-t border-white/10 flex justify-between items-center">
+        <div className="pt-[50px] border-t border-white/10 flex md:flex-col md:gap-[10px] lg:flex-row lg:gap-0 justify-between items-center">
           <p>{settings[0].company_name} © 2023. All rights reserved.</p>
 
           {/* contact info */}
