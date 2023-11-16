@@ -31,12 +31,21 @@ function Nav() {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="rounded-lg border flex items-center justify-center w-[60px] h-[60px] border-border md:hidden"
         >
-          <Image
-            src="/assets/icons/bars.svg"
-            alt="Mobile Menu"
-            height={24}
-            width={30}
-          />
+          {mobileMenuOpen ? (
+            <Image
+              src="/assets/icons/xmark.svg"
+              alt="Mobile Menu"
+              height={24}
+              width={30}
+            />
+          ) : (
+            <Image
+              src="/assets/icons/bars.svg"
+              alt="Mobile Menu"
+              height={24}
+              width={30}
+            />
+          )}
         </div>
         <ul className="lg:flex gap-8 hidden">
           {menuLinks.map((item, i) => (
