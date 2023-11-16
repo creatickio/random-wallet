@@ -10,7 +10,7 @@ function Nav() {
   return (
     <>
       {/* Top Bar */}
-      <div className="md:flex md:flex-col lg:flex lg:flex-row items-center justify-center bg-primary font-light text-darkBlack rounded-lg p-4 gap-1">
+      <div className="flex flex-col text-center lg:text-left lg:flex-row items-center justify-center bg-primary font-light text-darkBlack rounded-lg p-4 gap-1">
         <p>
           Registrations are now open. Go ahead and create your account.
           We&apos;ll be right there to help you.
@@ -20,10 +20,19 @@ function Nav() {
         </Link>
       </div>
       {/* Navigation */}
-      <div className="flex justify-between py-6 px-4 items-center">
+      <div className="flex justify-between py-2 md:py-6 md:px-4 items-center">
         {/* Logo */}
         <Logo />
         {/* Menu */}
+        {/* mobile icon */}
+        <div className="rounded-lg border flex items-center justify-center w-[60px] h-[60px] border-border md:hidden">
+          <Image
+            src="/assets/icons/bars.svg"
+            alt="Mobile Menu"
+            height={24}
+            width={30}
+          />
+        </div>
         <ul className="lg:flex gap-8 hidden">
           {menuLinks.map((item, i) => (
             <li key={i}>
@@ -37,7 +46,7 @@ function Nav() {
           ))}
         </ul>
         {/* Buttons */}
-        <ul className="flex gap-4">
+        <ul className="hidden md:flex gap-4">
           <li>
             <Link
               href="/signin"

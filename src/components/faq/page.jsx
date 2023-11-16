@@ -19,7 +19,9 @@ function FAQ({ question, answer }) {
             width={16}
           />
         </div>
-        <h4 className="text-darkBlack text-xl font-bold w-full">{question}</h4>
+        <h4 className="text-darkBlack text-lg md:text-xl font-bold w-full">
+          {question}
+        </h4>
         <Image
           src="/assets/icons/chevron-up.svg"
           alt="Chevron Up"
