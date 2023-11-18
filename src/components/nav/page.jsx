@@ -1,14 +1,30 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // Internal imports
 import menuLinks from "@/data/menuLinks.json";
 import Logo from "../logo/page";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 function Nav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSession, setIsSession] = useState(false);
+  console.log(isSession);
+  const supabase = createClientComponentClient();
+  useEffect(() => {
+    const getSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        setIsSession(true);
+      }
+    };
+    getSession();
+  }, []);
   return (
     <>
       {/* Top Bar */}
@@ -61,22 +77,35 @@ function Nav() {
         </ul>
         {/* Buttons */}
         <ul className="hidden md:flex gap-4">
-          <li>
-            <Link
-              href="/signin"
-              className="border-darkBlack border rounded-full py-4 px-6 transition duration-300 hover:bg-darkBlack hover:text-white"
-            >
-              Sign in
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/signup"
-              className="bg-primary rounded-full py-4 px-6 text-black hover:bg-yellow transition duration-300"
-            >
-              Register for free
-            </Link>
-          </li>
+          {isSession ? (
+            <li>
+              <Link
+                href="/dashboard"
+                className="bg-primary rounded-full py-4 px-6 text-black hover:bg-yellow transition duration-300"
+              >
+                Go to Dashboard
+              </Link>
+            </li>
+          ) : (
+            <>
+              <li>
+                <Link
+                  href="/signin"
+                  className="border-darkBlack border rounded-full py-4 px-6 transition duration-300 hover:bg-darkBlack hover:text-white"
+                >
+                  Sign in
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/signup"
+                  className="bg-primary rounded-full py-4 px-6 text-black hover:bg-yellow transition duration-300"
+                >
+                  Register for free
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
 
