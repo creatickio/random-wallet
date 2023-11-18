@@ -3,7 +3,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import React from "react";
 
-export default async function Dashboard() {
+export default async function Trade() {
   const supabase = createServerComponentClient({ cookies });
   const { data } = await supabase.from("profile").select();
   const {
@@ -19,9 +19,7 @@ export default async function Dashboard() {
         firstName={data[0].first_name}
         lastName={data[0].last_name}
       />
-      <h1>
-        Welcome to your dashboard, {data[0].first_name} {data[0].last_name}!
-      </h1>
+      <h1>Welcome to your trade</h1>
     </div>
   );
 }

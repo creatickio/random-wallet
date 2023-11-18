@@ -1,16 +1,31 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "../supabaseClient";
+import { redirect, useRouter } from "next/navigation";
+// import { supabase } from "../supabaseClient";
 import Image from "next/image";
 import Logo from "@/components/logo/page";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const router = useRouter();
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    const getSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        router.push("/dashboard");
+      }
+    };
+    getSession();
+  }, []);
 
   async function handleSignIn(e) {
     e.preventDefault();
@@ -18,6 +33,7 @@ function Signin() {
       email: email,
       password: password,
     });
+    router.push("/dashboard");
     if (error) {
       console.log("Error signing in:", error.message);
     } else {

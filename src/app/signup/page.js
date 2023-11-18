@@ -13,7 +13,6 @@ function Signup() {
   const [password, setPassword] = useState("");
 
   const router = useRouter();
-
   const supabase = createClientComponentClient();
 
   async function SignUpNewUser(e) {
@@ -22,7 +21,7 @@ function Signup() {
       email: email,
       password: password,
       options: {
-        emailRedirectTo: "/dashboard",
+        emailRedirectTo: `${location.origin}/auth/callback`,
         data: {
           first_name: name,
           last_name: surname,

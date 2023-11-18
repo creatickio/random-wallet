@@ -1,0 +1,23 @@
+[
+    {
+      "title": "Home",
+      "link": "/dashboard"
+    },
+    {
+      "title": "Deposit",
+      "link": "/dashboard/deposit"
+    },
+    {
+      "title": "Withdraw",
+      "link": "/dashboard/withdraw"
+    },
+    {
+      "title": "Trade",
+      "link": "/dashboard/trade"
+    },
+    {
+      "title": "Profile",
+      "link": "/dashboard/profile"
+    }
+  ]
+  
