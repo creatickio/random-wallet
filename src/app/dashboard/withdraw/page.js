@@ -2,6 +2,7 @@ import DashboardNav from "@/components/dashboard/nav/page";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import React from "react";
+import { redirect } from "next/navigation";
 
 export default async function Withdraw() {
   const supabase = createServerComponentClient({ cookies });
