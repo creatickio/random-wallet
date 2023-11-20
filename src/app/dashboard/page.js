@@ -3,6 +3,8 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import React from "react";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 
 export default async function Dashboard() {
   const supabase = createServerComponentClient({ cookies });
@@ -14,15 +16,85 @@ export default async function Dashboard() {
   if (!session) {
     redirect("/signin");
   }
+
+  const user = data[0];
   return (
-    <div className="p-2">
-      <DashboardNav
-        firstName={data[0].first_name}
-        lastName={data[0].last_name}
-      />
-      <h1>
-        Welcome to your dashboard, {data[0].first_name} {data[0].last_name}!
-      </h1>
+    <div className="p-2 flex flex-col gap-2">
+      <DashboardNav firstName={user.first_name} lastName={user.last_name} />
+      {/* header */}
+      <div className="px-8 flex flex-row justify-between items-center">
+        {/* left side */}
+        <div className="flex gap-4">
+          {/* Welcome message */}
+          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
+            <p className="text-xl text-text font-light">Welcome</p>
+            <p className="text-darkBlack text-4xl font-medium tracking-tighter">
+              <span>
+                {user.first_name} {user.last_name}
+              </span>
+            </p>
+          </div>
+          {/* Balance in ${currency} */}
+          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
+            <p className="text-xl text-text font-light">Balance in EURO:</p>
+            <p className="text-darkBlack text-4xl font-medium tracking-tighter">
+              <span>€ 34,254</span>
+            </p>
+          </div>
+          {/* Balance in BTC */}
+          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
+            <p className="text-xl text-text font-light">Balance in BTC:</p>
+            <p className="text-darkBlack text-4xl font-medium tracking-tighter">
+              {user.balance} BTC
+            </p>
+          </div>
+        </div>
+        {/* right side */}
+        <div className="flex gap-4">
+          <Link
+            href="/dashboard/deposit"
+            className="flex gap-4 items-center bg-primary rounded-full py-6 px-8 text-darkBlack font-medium text-xl duration-300 transition-all hover:bg-yellow"
+          >
+            Deposit{" "}
+            <Image
+              src="/assets/icons/plus-dark.svg"
+              height={16}
+              width={16}
+              alt="Deposit"
+            />
+          </Link>
+          <Link
+            href="/dashboard/withdraw"
+            className="flex gap-4 items-center bg-transparent border border-darkBlack rounded-full py-6 px-8 text-darkBlack font-medium text-xl duration-300 transition-all hover:bg-darkBlack/20 hover:text-darkBlack hover:border-darkBlack/0"
+          >
+            Withdraw
+            <Image
+              src="/assets/icons/minus-dark.svg"
+              height={16}
+              width={16}
+              alt="Withdraw"
+            />
+          </Link>
+          <Link
+            href="/dashboard/trade"
+            className="flex gap-4 items-center bg-darkBlack rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70"
+          >
+            New trade
+            <Image
+              src="/assets/icons/plus-light.svg"
+              height={16}
+              width={16}
+              alt="Trade"
+            />
+          </Link>
+        </div>
+      </div>
+      {/* tables */}
+      <div className="px-8">
+        <h1>
+          Welcome to your dashboard, {data[0].first_name} {data[0].last_name}!
+        </h1>
+      </div>
     </div>
   );
 }
