@@ -61,7 +61,7 @@ export default async function AccountDetails() {
           </Link>
         </div>
         {/* Content */}
-        <div className="w-8/12 mx-auto">
+        <div className="max-w-[1068px] mx-auto">
           <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
             <AccountDetailsComp />
           </div>

@@ -16,12 +16,12 @@ export default async function AccountVerification() {
     redirect("/signin");
   }
 
+  const user = data[0];
+  const isVerified = user.isVerified;
+
   return (
     <div className="flex flex-col gap-2 p-2">
-      <DashboardNav
-        firstName={data[0].first_name}
-        lastName={data[0].last_name}
-      />
+      <DashboardNav firstName={user.first_name} lastName={user.last_name} />
       <div className="px-8">
         <div className="flex gap-4 items-center justify-center py-8">
           <Link
@@ -60,48 +60,52 @@ export default async function AccountVerification() {
         </div>
 
         {/* Content */}
-        <div className="w-8/12 mx-auto text-darkBlack flex flex-col gap-2">
+        <div className="max-w-[1068px] mx-auto text-darkBlack flex flex-col gap-2">
           {/* verification status */}
           <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
             <h3 className="font-bold text-2xl">Account verification status</h3>
             <div className="bg-primary rounded-2xl flex gap-0 flex-col py-8 px-6">
               <p className="font-medium text-lg">Your account is currently</p>
-              <p className="font-bold text-xl uppercase">Not verified</p>
+              <p className="font-bold text-xl uppercase">
+                {isVerified ? "Verified" : "Not verified"}
+              </p>
             </div>
           </div>
 
           {/* verification details */}
-          <div className="bg-[#F4F4F4] p-16 rounded-2xl flex flex-col gap-16">
-            <p className="font-medium text-2xl">
-              Please send an email to{" "}
-              <Link
-                href="mailto:support@random-wallet.io"
-                className="underline"
-              >
-                support@random-wallet.io
-              </Link>{" "}
-              to get your account verified.
-            </p>
-            <div className="flex flex-col gap-4">
-              <p className="text-xl">
-                Please ensure to include in the attachments as the following:
+          {!isVerified && (
+            <div className="bg-[#F4F4F4] p-16 rounded-2xl flex flex-col gap-16">
+              <p className="font-medium text-2xl">
+                Please send an email to{" "}
+                <Link
+                  href="mailto:support@random-wallet.io"
+                  className="underline"
+                >
+                  support@random-wallet.io
+                </Link>{" "}
+                to get your account verified.
               </p>
-              <ul className="text-lg list-disc pl-4">
-                <li>Passport / ID document / Drivers license</li>
-                <li>
-                  A photo of you holding the identification document and showing
-                  your face
-                </li>
-                <li>
-                  A document where we can verify your address{" "}
-                  <span className="italic">
+              <div className="flex flex-col gap-4">
+                <p className="text-xl">
+                  Please ensure to include in the attachments as the following:
+                </p>
+                <ul className="text-lg list-disc pl-4">
+                  <li>Passport / ID document / Drivers license</li>
+                  <li>
+                    A photo of you holding the identification document and
+                    showing your face
+                  </li>
+                  <li>
+                    A document where we can verify your address{" "}
+                    <span className="italic">
+                      ex: electricity bill, phone bill
+                    </span>
                     ex: electricity bill, phone bill
-                  </span>
-                  ex: electricity bill, phone bill
-                </li>
-              </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* note */}
           <p className="text-center italic text-xl">

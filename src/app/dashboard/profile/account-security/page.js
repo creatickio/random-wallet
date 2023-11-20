@@ -1,3 +1,4 @@
+import ChangePassword from "@/components/changePassword/page";
 import DashboardNav from "@/components/dashboard/nav/page";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -16,7 +17,6 @@ export default async function AccountSecurity() {
     redirect("/signin");
   }
 
-  console.log(data[0].first_name);
   return (
     <div className="flex flex-col gap-2 p-2">
       <DashboardNav
@@ -60,8 +60,10 @@ export default async function AccountSecurity() {
           </Link>
         </div>
         {/* Content */}
-        <div className="w-8/12 mx-auto">
-          <h1>Welcome to your Acount Details</h1>
+        <div className="max-w-[1068px] mx-auto">
+          <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
+            <ChangePassword email={data[0].email} />
+          </div>
         </div>
       </div>
     </div>

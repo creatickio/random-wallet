@@ -2,6 +2,8 @@
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AccountDetailsComp() {
   const [firstName, setFirstName] = useState();
@@ -15,6 +17,8 @@ function AccountDetailsComp() {
   const [address, setAddress] = useState();
   const [zipCode, setZipCode] = useState();
   const [loading, setLoading] = useState(false);
+  const [updatedSuccessfully, setUpdatedSuccessfully] = useState();
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -57,9 +61,30 @@ function AccountDetailsComp() {
     const { error } = await supabase.from("profile").upsert(updates);
 
     if (error) {
-      alert(error.message);
+      setError(error.message);
+      toast.error(`${error.message}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     } else {
       setLoading(false);
+      setUpdatedSuccessfully("Your profile has been updated successfully");
+      toast.success("Your profile has been updated successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     }
   }
 
@@ -68,6 +93,7 @@ function AccountDetailsComp() {
       onSubmit={(event) => updateProfile(event)}
       className="text-left flex flex-col gap-6"
     >
+      <ToastContainer />
       {/* First name last name */}
       <div className="flex flex-col gap-6 md:flex-row w-full">
         <div className="flex flex-col w-full">
@@ -229,6 +255,10 @@ function AccountDetailsComp() {
       >
         {loading ? "Loading ..." : "Save changes"}
       </button>
+      {error && <p>{error}</p>}
+      {updatedSuccessfully !== "" && (
+        <p className="text-center text-green-500">{updatedSuccessfully}</p>
+      )}
     </form>
   );
 }
