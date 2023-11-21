@@ -443,7 +443,7 @@ export default async function Homepage() {
               <p className="text-base text-text font-light">
                 Invest for the future
               </p>
-              <h2 className="text-darkBlack font-medium text-[40px] tracking-tighter md:text-5xl lg:text-[64px] lg:tracking-tight md:leading-snug">
+              <h2 className="text-darkBlack font-medium text-[40px] tracking-tighter md:text-5xl lg:text-[64px] lg:tracking-tighter md:leading-snug">
                 Get the most out of your
                 <span className="bg-yellow py-2 px-3 mx-3 rounded-md">
                   investments

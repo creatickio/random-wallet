@@ -69,6 +69,7 @@ function Nav() {
               <Link
                 className="hover:text-primary transition duration-300 h-full"
                 href={item.link}
+                scroll={true}
               >
                 {item.title}
               </Link>
