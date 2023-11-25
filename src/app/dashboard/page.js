@@ -5,6 +5,7 @@ import React from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import ConvertedPrice from "@/components/convertedPrice/page";
 
 export default async function Dashboard() {
   const supabase = createServerComponentClient({ cookies });
@@ -18,6 +19,48 @@ export default async function Dashboard() {
   }
 
   const user = data[0];
+  const btcBalance = user.balance;
+  const selectedCurrency = user.currency;
+
+  const cryptoFetch = await fetch(
+    `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${selectedCurrency}`
+  );
+  const cryptoData = await cryptoFetch.json();
+  const btcPrice = cryptoData.bitcoin;
+
+  ("use server");
+  function getCovertedPrice() {
+    if (selectedCurrency === "EUR") {
+      return (
+        <div className="flex gap-2">
+          <span>€</span>
+          <span>{cryptoData.bitcoin.eur.toLocaleString()}</span>
+        </div>
+      );
+    } else if (selectedCurrency === "CHF") {
+      return (
+        <div className="flex gap-2">
+          <span>₣</span>
+          <span>{cryptoData.bitcoin.chf.toLocaleString()}</span>
+        </div>
+      );
+    } else if (selectedCurrency === "GBP") {
+      return (
+        <div className="flex gap-2">
+          <span>£</span>
+          <span>{cryptoData.bitcoin.gbp.toLocaleString()}</span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex gap-2">
+          <span>$</span>
+          <span>{cryptoData.bitcoin.usd.toLocaleString()}</span>
+        </div>
+      );
+    }
+  }
+
   return (
     <div className="p-2 flex flex-col gap-2">
       <DashboardNav firstName={user.first_name} lastName={user.last_name} />
@@ -36,10 +79,14 @@ export default async function Dashboard() {
           </div>
           {/* Balance in ${currency} */}
           <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
-            <p className="text-xl text-text font-light">Balance in EURO:</p>
-            <p className="text-darkBlack text-4xl font-medium tracking-tighter">
-              <span>€ 34,254</span>
+            <p className="text-xl text-text font-light">
+              Balance in {selectedCurrency}:
             </p>
+            <div className="text-darkBlack text-4xl font-medium tracking-tighter">
+              {cryptoData.bitcoin && getCovertedPrice()}
+              {/* TODO: Convert the price component */}
+              {/* <ConvertedPrice /> */}
+            </div>
           </div>
           {/* Balance in BTC */}
           <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
