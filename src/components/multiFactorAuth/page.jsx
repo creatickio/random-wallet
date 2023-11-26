@@ -1,115 +1,106 @@
 "use client";
+import { useState, useEffect } from "react";
+
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import EnrollMFA from "../enrollMFA/page";
+import UnenrollMFA from "../unenrollMFA/page";
 
-export function EnrollMFA({ onEnrolled, onCancelled }) {
-  const [factorId, setFactorId] = useState("");
-  const [qr, setQR] = useState(""); // holds the QR code image SVG
-  const [verifyCode, setVerifyCode] = useState(""); // contains the code entered by the user
-  const [error, setError] = useState(""); // holds an error message
-
-  const supabase = createClientComponentClient();
-
-  const onEnableClicked = () => {
-    setError("");
-    (async () => {
-      const challenge = await supabase.auth.mfa.challenge({ factorId });
-      if (challenge.error) {
-        setError(challenge.error.message);
-        throw challenge.error;
-      }
-
-      const challengeId = challenge.data.id;
-
-      const verify = await supabase.auth.mfa.verify({
-        factorId,
-        challengeId,
-        code: verifyCode,
-      });
-      if (verify.error) {
-        setError(verify.error.message);
-        throw verify.error;
-      }
-
-      onEnrolled();
-    })();
-  };
+function MFAComponent() {
+  const [hasMFA, setHasMFA] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.auth.mfa.enroll({
-        factorType: "totp",
-      });
+    async function checkMFA() {
+      const supabase = createClientComponentClient();
+      const { data, error } =
+        await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+      console.log(data);
       if (error) {
-        throw error;
+        console.error(error);
+        return;
       }
 
-      setFactorId(data.id);
+      if (data.currentLevel !== "aal1") {
+        setHasMFA(true);
+      }
 
-      // Supabase Auth returns an SVG QR code which you can convert into a data
-      // URL that you can place in an <img> tag.
-      setQR(data.totp.qr_code);
-    })();
+      setIsLoading(false);
+    }
+
+    checkMFA();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="max-w-[1068px] mx-auto">
+        <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
+          <div className="flex flex-col">
+            <div className="grid grid-cols-3 text-left py-4 px-6 text-base font-normal uppercase text-darkBlack bg-darkBlack/20 rounded-t-[4px]">
+              <p>Type</p>
+              <p>Status</p>
+              <p></p>
+            </div>
+            <div className="grid grid-cols-3 items-center text-left p-6 border border-[#BBBBBB] rounded-b-[4px]">
+              <p>Loading ...</p>
+              <p>Loading ...</p>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-primary py-4 px-6 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed w-full"
+              >
+                Loading ...
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasMFA) {
+    return (
+      <div>
+        <UnenrollMFA />
+      </div>
+    );
+  }
+
   return (
+    // Show non-MFA UI
     <>
-      {error && <div className="error">{error}</div>}
-      <Image src={qr} height={300} width={300} alt="QR Code" />
-      <input
-        type="text"
-        value={verifyCode}
-        onChange={(e) => setVerifyCode(e.target.value.trim())}
-      />
-      <input type="button" value="Enable" onClick={onEnableClicked} />
-      <input type="button" value="Cancel" onClick={onCancelled} />
+      <div className="max-w-[1068px] mx-auto">
+        <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
+          <div className="flex flex-col">
+            <div className="grid grid-cols-3 text-left py-4 px-6 text-base font-normal uppercase text-darkBlack bg-darkBlack/20 rounded-t-[4px]">
+              <p>Type</p>
+              <p>Status</p>
+              <p></p>
+            </div>
+            <div className="grid grid-cols-3 items-center text-left p-6 border border-[#BBBBBB] rounded-b-[4px]">
+              <p>Authenticator App</p>
+              <p>Not Configured</p>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-primary py-4 px-6 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed w-full"
+              >
+                Configure
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Show Modal */}
+      {isModalOpen && (
+        <div className="absolute top-0 left-0 flex items-center justify-center w-full min-h-full bg-darkBlack/50">
+          {/* Modal */}
+          <div className="w-[630px] bg-white rounded-2xl">
+            <EnrollMFA setIsModalOpen={setIsModalOpen} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
-export function UnenrollMFA() {
-  const [factorId, setFactorId] = useState("");
-  const [factors, setFactors] = useState([]);
-  const [error, setError] = useState(""); // holds an error message
-
-  const supabase = createClientComponentClient();
-
-  console.log(factors);
-  console.log(factorId);
-  useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.auth.mfa.listFactors();
-      if (error) {
-        throw error;
-      }
-
-      setFactors(data.totp);
-    })();
-  }, []);
-
-  return (
-    <>
-      {error && <div className="error">{error}</div>}
-      <tbody>
-        <tr>
-          <td>Factor ID</td>
-          <td>Friendly Name</td>
-          <td>Factor Status</td>
-        </tr>
-        {factors.map((factor) => (
-          <tr key={factor.id}>
-            <td>{factor.id}</td>
-            <td>{factor.friendly_name}</td>
-            <td>{factor.factor_type}</td>
-            <td>{factor.status}</td>
-          </tr>
-        ))}
-      </tbody>
-
-      <button onClick={() => supabase.auth.mfa.unenroll({ factorId })}>
-        Unenroll
-      </button>
-    </>
-  );
-}
+export { MFAComponent };

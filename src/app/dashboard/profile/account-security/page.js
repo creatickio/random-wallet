@@ -1,6 +1,10 @@
 import ChangePassword from "@/components/changePassword/page";
 import DashboardNav from "@/components/dashboard/nav/page";
-import { EnrollMFA, UnenrollMFA } from "@/components/multiFactorAuth/page";
+import {
+  MFAComponent,
+  EnrollMFA,
+  UnenrollMFA,
+} from "@/components/multiFactorAuth/page";
 
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -19,12 +23,11 @@ export default async function AccountSecurity() {
     redirect("/signin");
   }
 
+  const user = data[0];
+
   return (
     <div className="flex flex-col gap-2 p-2">
-      <DashboardNav
-        firstName={data[0].first_name}
-        lastName={data[0].last_name}
-      />
+      <DashboardNav firstName={user.first_name} lastName={user.last_name} />
       <div className="px-8">
         <div className="flex gap-4 items-center justify-center py-8">
           <Link
@@ -61,7 +64,8 @@ export default async function AccountSecurity() {
             </p>
           </Link>
         </div>
-        {/* 2FA entrollment */}
+        <MFAComponent />
+        {/* 2FA entrollment
         <div className="max-w-[1068px] mx-auto">
           <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
             <div className="flex flex-col">
@@ -82,7 +86,7 @@ export default async function AccountSecurity() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         {/* Change Password */}
         <div className="max-w-[1068px] mx-auto mt-2">
           <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
