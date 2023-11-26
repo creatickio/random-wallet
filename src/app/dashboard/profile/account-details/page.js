@@ -16,46 +16,42 @@ export default async function AccountDetails() {
   if (!session) {
     redirect("/signin");
   }
-  // console.log(data);
-  // information stored in database
+  const user = data[0];
   return (
     <div className="flex flex-col gap-2 p-2">
-      <DashboardNav
-        firstName={data[0].first_name}
-        lastName={data[0].last_name}
-      />
-      <div className="px-8">
-        <div className="flex gap-4 items-center justify-center py-8">
+      <DashboardNav firstName={user.first_name} lastName={user.last_name} />
+      <div className="px-4 md:px-8">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-center py-8">
           <Link
             href="/dashboard/profile/account-details"
-            className="bg-primary flex flex-col gap-0 p-8 rounded-2xl w-fit cursor-pointer duration-300 transition-all"
+            className="bg-primary flex flex-col gap-0 p-8 rounded-2xl w-full text-center md:text-left md:w-fit cursor-pointer duration-300 transition-all"
           >
-            <h2 className="text-darkBlack font-medium tracking-tighter text-4xl">
+            <h2 className="text-darkBlack font-medium tracking-tighter text-3xl lg:text-4xl">
               Account Details
             </h2>
-            <p className="font-light text-text text-xl">
+            <p className="font-light text-text text-base lg:text-xl">
               Manage your account data
             </p>
           </Link>
           <Link
             href="/dashboard/profile/account-verification"
-            className="bg-lightlightGray flex flex-col gap-0 p-8 rounded-2xl w-fit cursor-pointer duration-300 transition-all hover:bg-lightGray"
+            className="bg-lightlightGray flex flex-col gap-0 p-8 rounded-2xl w-full text-center md:text-left md:w-fit cursor-pointer duration-300 transition-all hover:bg-lightGray"
           >
-            <h2 className="text-darkBlack font-medium tracking-tighter text-4xl">
+            <h2 className="text-darkBlack font-medium tracking-tighter text-3xl lg:text-4xl">
               Account Verification
             </h2>
-            <p className="font-light text-text text-xl">
+            <p className="font-light text-text text-base lg:text-xl">
               Manage your account verification status
             </p>
           </Link>
           <Link
             href="/dashboard/profile/account-security"
-            className="bg-lightlightGray flex flex-col gap-0 p-8 rounded-2xl w-fit cursor-pointer duration-300 transition-all hover:bg-lightGray"
+            className="bg-lightlightGray flex flex-col gap-0 p-8 rounded-2xl w-full text-center md:text-left md:w-fit cursor-pointer duration-300 transition-all hover:bg-lightGray"
           >
-            <h2 className="text-darkBlack font-medium tracking-tighter text-4xl">
+            <h2 className="text-darkBlack font-medium tracking-tighter text-3xl lg:text-4xl">
               Account Security
             </h2>
-            <p className="font-light text-text text-xl">
+            <p className="font-light text-text text-base lg:text-xl">
               Manage your account security
             </p>
           </Link>
