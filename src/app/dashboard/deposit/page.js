@@ -166,74 +166,102 @@ export default async function Deposit() {
             <thead className="text-left">
               <tr className="bg-lightlightGray">
                 <th className="p-4 font-medium text-xl">Amount inserted</th>
-                <th className="hidden md:block font-medium text-xl">Date</th>
+                <th className="hidden md:table-cell font-medium text-xl">
+                  Date
+                </th>
                 <th className="font-medium text-xl">Status</th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:block text-lg">03 December, 2023</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
                 <td className="text-lg">Completed</td>
               </tr>
             </tbody>
