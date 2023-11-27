@@ -34,28 +34,28 @@ export default async function Dashboard() {
       return (
         <div className="flex gap-2">
           <span>€</span>
-          <span>{cryptoData.bitcoin.eur.toLocaleString()}</span>
+          <span>{(btcBalance * btcPrice.eur).toLocaleString()}</span>
         </div>
       );
     } else if (selectedCurrency === "CHF") {
       return (
         <div className="flex gap-2">
           <span>₣</span>
-          <span>{cryptoData.bitcoin.chf.toLocaleString()}</span>
+          <span>{(btcBalance * btcPrice.chf).toLocaleString()}</span>
         </div>
       );
     } else if (selectedCurrency === "GBP") {
       return (
         <div className="flex gap-2">
           <span>£</span>
-          <span>{cryptoData.bitcoin.gbp.toLocaleString()}</span>
+          <span>{(btcBalance * btcPrice.gbp).toLocaleString()}</span>
         </div>
       );
     } else {
       return (
         <div className="flex gap-2">
           <span>$</span>
-          <span>{cryptoData.bitcoin.usd.toLocaleString()}</span>
+          <span>{(btcBalance * btcPrice.usd).toLocaleString()}</span>
         </div>
       );
     }
