@@ -65,11 +65,11 @@ export default async function Dashboard() {
     <div className="p-2 flex flex-col gap-2">
       <DashboardNav firstName={user.first_name} lastName={user.last_name} />
       {/* header */}
-      <div className="px-8 flex flex-row justify-between items-center">
+      <div className="px-4 md:px-8 flex flex-col lg:flex-row justify-between items-center gap-6">
         {/* left side */}
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4 w-full lg:w-fit">
           {/* Welcome message */}
-          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
+          <div className="rounded-2xl p-8 flex flex-col gap-2 w-full lg:w-fit bg-lightlightGray border border-border">
             <p className="text-xl text-text font-light">Welcome</p>
             <p className="text-darkBlack text-4xl font-medium tracking-tighter">
               <span>
@@ -78,7 +78,7 @@ export default async function Dashboard() {
             </p>
           </div>
           {/* Balance in ${currency} */}
-          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
+          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-full lg:w-fit">
             <p className="text-xl text-text font-light">
               Balance in {selectedCurrency}:
             </p>
@@ -89,7 +89,7 @@ export default async function Dashboard() {
             </div>
           </div>
           {/* Balance in BTC */}
-          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-fit">
+          <div className="rounded-2xl p-8 flex flex-col gap-2 bg-lightlightGray border border-border w-full lg:w-fit">
             <p className="text-xl text-text font-light">Balance in BTC:</p>
             <p className="text-darkBlack text-4xl font-medium tracking-tighter">
               {user.balance} BTC
@@ -97,10 +97,10 @@ export default async function Dashboard() {
           </div>
         </div>
         {/* right side */}
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4 w-full lg:w-fit">
           <Link
             href="/dashboard/deposit"
-            className="flex gap-4 items-center bg-primary rounded-full py-6 px-8 text-darkBlack font-medium text-xl duration-300 transition-all hover:bg-yellow"
+            className="flex gap-4 items-center bg-primary rounded-full py-6 justify-center px-8 w-full lg:w-fit text-darkBlack font-medium text-xl duration-300 transition-all hover:bg-yellow"
           >
             Deposit{" "}
             <Image
@@ -112,7 +112,7 @@ export default async function Dashboard() {
           </Link>
           <Link
             href="/dashboard/withdraw"
-            className="flex gap-4 items-center bg-transparent border border-darkBlack rounded-full py-6 px-8 text-darkBlack font-medium text-xl duration-300 transition-all hover:bg-darkBlack/20 hover:text-darkBlack hover:border-darkBlack/0"
+            className="flex gap-4 items-center bg-transparent border w-full lg:w-fit justify-center border-darkBlack rounded-full py-6 px-8 text-darkBlack font-medium text-xl duration-300 transition-all hover:bg-darkBlack/20 hover:text-darkBlack hover:border-darkBlack/0"
           >
             Withdraw
             <Image
@@ -124,7 +124,7 @@ export default async function Dashboard() {
           </Link>
           <Link
             href="/dashboard/trade"
-            className="flex gap-4 items-center bg-darkBlack rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70"
+            className="flex gap-4 items-center bg-darkBlack w-full lg:w-fit justify-center rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70"
           >
             New trade
             <Image
@@ -137,10 +137,142 @@ export default async function Dashboard() {
         </div>
       </div>
       {/* tables */}
-      <div className="px-8">
-        <h1>
-          Welcome to your dashboard, {data[0].first_name} {data[0].last_name}!
-        </h1>
+      <div className="px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 py-8">
+        {/* deposit table */}
+        <div className="flex flex-col gap-[10px] col-span-2 lg:col-span-1">
+          <h3 className="font-medium tracking-tighter text-4xl">Deposits</h3>
+          <table className="table-auto w-full rounded-lg border border-border">
+            <thead className="text-left">
+              <tr className="bg-lightlightGray">
+                <th className="p-4 font-medium text-xl">Amount inserted</th>
+                <th className="hidden md:table-cell font-medium text-xl">
+                  Date
+                </th>
+                <th className="font-medium text-xl">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Completed</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Completed</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Completed</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Completed</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        {/* withdraw table */}
+        <div className="flex flex-col gap-[10px] col-span-2 lg:col-span-1">
+          <h3 className="font-medium tracking-tighter text-4xl">Withdraw</h3>
+          <table className="table-auto w-full rounded-lg border border-border">
+            <thead className="text-left">
+              <tr className="bg-lightlightGray">
+                <th className="p-4 font-medium text-xl">Amount inserted</th>
+                <th className="hidden md:table-cell font-medium text-xl">
+                  Date
+                </th>
+                <th className="font-medium text-xl">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        {/* trade table */}
+        <div className="flex flex-col gap-[10px] col-span-2">
+          <h3 className="font-medium tracking-tighter text-4xl">Trades</h3>
+          <table className="table-auto w-full rounded-lg border border-border">
+            <thead className="text-left">
+              <tr className="bg-lightlightGray">
+                <th className="p-4 font-medium text-xl">Amount inserted</th>
+                <th className="hidden md:table-cell font-medium text-xl">
+                  Date
+                </th>
+                <th className="font-medium text-xl">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">BTC 0.002</td>
+                <td className="hidden md:table-cell text-lg">
+                  03 December, 2023
+                </td>
+                <td className="text-lg">Active</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
