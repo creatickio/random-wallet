@@ -1,8 +1,9 @@
 import AdminNav from "@/components/admin/nav/page";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
-function AdminPage() {
+export default function AccountsAdmin() {
   return (
     <div>
       <div className="flex flex-col gap-2 p-2">
@@ -12,10 +13,10 @@ function AdminPage() {
           <div className="flex flex-row justify-between items-center gap-40 py-8">
             <div className="w-fit shrink-0">
               <h2 className="font-medium text-4xl text-darkBlack tracking-tighter">
-                Active accounts
+                All accounts
               </h2>
               <p className="font-light text-xl text-text">
-                Logged in accounts are visible here.
+                Manage accounts and their data here.
               </p>
             </div>
             <div className="w-full relative flex items-center">
@@ -35,11 +36,18 @@ function AdminPage() {
                 Search
               </button>
             </div>
+            <button className="flex items-center justify-center shrink-0 px-8 py-6 gap-4 text-white bg-darkBlack rounded-full duration-300 transition-all hover:bg-darkGray">
+              Add new account{" "}
+              <Image
+                src="/assets/icons/plus-light.svg"
+                width={16}
+                height={16}
+                alt="plus icon"
+              />
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default AdminPage;

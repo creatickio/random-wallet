@@ -1,0 +1,27 @@
+[
+    {
+      "title": "Dashboard",
+      "link": "/admin"
+    },
+    {
+      "title": "Accounts",
+      "link": "/admin/accounts"
+    },
+    {
+      "title": "Trade",
+      "link": "/admin/trade"
+    },
+    {
+      "title": "Deposit",
+      "link": "/admin/deposit"
+    },
+    {
+      "title": "Withdraw",
+      "link": "/admin/withdraw"
+    },
+    {
+      "title": "Settings",
+      "link": "/admin/settings"
+    }
+  ]
+  
