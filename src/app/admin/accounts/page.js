@@ -1,3 +1,4 @@
+import AllAccounts from "@/components/admin/allAccounts/page";
 import AdminNav from "@/components/admin/nav/page";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,6 +47,8 @@ export default function AccountsAdmin() {
               />
             </button>
           </div>
+          {/* A table of accounts */}
+          <AllAccounts />
         </div>
       </div>
     </div>
