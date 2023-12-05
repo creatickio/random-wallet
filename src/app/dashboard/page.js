@@ -6,14 +6,16 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import ConvertedPrice from "@/components/convertedPrice/page";
+import { parseISO, format } from "date-fns";
 
 export default async function Dashboard() {
   const supabase = createServerComponentClient({ cookies });
   const { data } = await supabase.from("profile").select();
+  const { data: deposits } = await supabase.from("deposits").select();
   const {
     data: { session },
   } = await supabase.auth.getSession();
-
+  console.log(deposits);
   if (!session) {
     redirect("/signin");
   }
@@ -152,13 +154,56 @@ export default async function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
+              {deposits.map((deposit) => (
+                <tr key={deposit.id} className="border-b border-border">
+                  <td className="p-4 text-lg">BTC {deposit.amount}</td>
+                  <td className="hidden md:table-cell text-lg">
+                    {format(parseISO(deposit.created_date), "d LLLL, yyyy")}
+                  </td>
+                  <td>
+                    <span
+                      className={`text-lg flex w-fit gap-1.5
+                      ${
+                        deposit.status === "pending"
+                          ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                        deposit.status === "completed"
+                          ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                        deposit.status === "declined"
+                          ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      }`}
+                    >
+                      {deposit.status === "completed" ? (
+                        <Image
+                          src="/assets/icons/check.svg"
+                          height={20}
+                          width={20}
+                          alt="Completed"
+                        />
+                      ) : deposit.status === "pending" ? (
+                        <Image
+                          src="/assets/icons/pending.svg"
+                          height={20}
+                          width={20}
+                          alt="Pending"
+                        />
+                      ) : (
+                        <Image
+                          src="/assets/icons/xmark.svg"
+                          height={20}
+                          width={20}
+                          alt="Declined"
+                        />
+                      )}
+                      {deposit.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
               <tr className="border-b border-border">
                 <td className="p-4 text-lg">BTC 0.002</td>
                 <td className="hidden md:table-cell text-lg">

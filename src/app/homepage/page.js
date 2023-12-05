@@ -1,7 +1,7 @@
 import React from "react";
 import Nav from "@/components/nav/page";
 import Link from "next/link";
-import { supabase } from "../supabaseClient";
+// import { supabase } from "../supabaseClient";
 import Image from "next/image";
 import Nossr from "@/components/crypto/nossr";
 import Ticker from "@/components/crypto/ticker";
@@ -11,8 +11,10 @@ import FAQ from "@/components/faq/page";
 import { whychooseusData } from "@/data/whychooseusData";
 import { faqData } from "@/data/faqData";
 import { howitworksData } from "@/data/howitworksData";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default async function Homepage() {
+  const supabase = createClientComponentClient();
   let { data: settings, error } = await supabase.from("settings").select("*");
 
   console.log(settings[0]);

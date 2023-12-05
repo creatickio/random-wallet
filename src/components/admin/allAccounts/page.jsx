@@ -12,7 +12,7 @@ export default function AllAccounts() {
   useEffect(() => {
     async function fetchData() {
       const supabase = createClientComponentClient();
-      const { data } = await supabase.from("profile").select();
+      const { data } = await supabase.from("profile").select("*");
       setUsers(data);
     }
     fetchData();

@@ -7,11 +7,34 @@ export default function UnenrollMFA() {
   const [factors, setFactors] = useState([]);
   const [error, setError] = useState(""); // holds an error message
   const [verifyCode, setVerifyCode] = useState(""); // holds the code entered by the user
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const supabase = createClientComponentClient();
+  const handleRemoveMfa = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const response = await fetch("/src/app/api/remove-mfa", {
+        method: "POST",
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSuccess(true);
+      } else {
+        setError(data.error);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     (async () => {
+      const supabase = createClientComponentClient();
       const { data, error } = await supabase.auth.mfa.listFactors();
       if (error) {
         throw error;
@@ -20,97 +43,46 @@ export default function UnenrollMFA() {
     })();
   }, []);
 
-  async function handleUnenrollFactor() {
-    const { error } = await supabase.auth.mfa.unenroll({ factorId });
-    if (error) {
-      setError(error.message);
-      return;
-    }
-    setFactorId(factors[0].id);
-    setVerifyCode("");
-    const { data, error: fetchError } = await supabase.auth.mfa.listFactors();
-    if (fetchError) {
-      setError(fetchError.message);
-      return;
-    }
-    setFactors(data.totp);
-
-    // Update the user's metadata to set the current MFA level to null
-    const { user, error: updateError } = await supabase.auth.update({
-      data: { currentLevel: null },
-    });
-
-    if (updateError) {
-      console.error(updateError);
-      return;
-    }
-
-    console.log(user);
-  }
-
   return (
     <>
       {error && <div className="error">{error}</div>}
       <div className="max-w-[1068px] mx-auto">
         <div className="bg-[#F4F4F4] p-8 rounded-2xl flex flex-col gap-6 text-center">
           <div className="flex flex-col">
-            <div className="grid grid-cols-3 text-left py-4 px-6 text-base font-normal uppercase text-darkBlack bg-darkBlack/20 rounded-t-[4px]">
+            <div className="flex justify-between text-left py-4 px-6 text-base font-normal uppercase text-darkBlack bg-darkBlack/20 rounded-t-[4px]">
               <p>Type</p>
               <p>Status</p>
-              <p></p>
+              <p className="text-darkBlack/0 select-none">Action</p>
             </div>
             {factors.map((factor) => (
               <div
                 key={factor.id}
-                className="grid grid-cols-3 items-center text-left p-6 border border-[#BBBBBB] rounded-b-[4px]"
+                className="flex justify-between items-center text-left p-6 border border-[#BBBBBB] rounded-b-[4px]"
               >
-                <p>{factor.factor_type}</p>
-                <p>{factor.status}</p>
-                <td>{factor.friendly_name}</td>
-                <td>{factor.factor_type}</td>
+                {factor.factor_type && <p>Authenticator App</p>}
+                {factor.status === "verified" ? (
+                  <p className="bg-[#D3FFCE] text-darkBlack px-4 py-2 rounded-lg w-fit">
+                    Verified
+                  </p>
+                ) : (
+                  <p>Not Configured</p>
+                )}
                 <button
-                  onClick={handleUnenrollFactor}
-                  className="bg-primary py-4 px-6 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed w-full"
+                  className="bg-primary py-4 px-6 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed w-fit self-end"
+                  onClick={handleRemoveMfa}
+                  disabled={isLoading}
                 >
-                  Remove
+                  {isLoading ? "Loading..." : "Remove MFA"}
                 </button>
+                {error && <p>Error: {error}</p>}
+                {success && (
+                  <p>MFA factors removed and MFA level set to aal1</p>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
-      {/* old */}
-      <table>
-        <thead>
-          <tr>
-            <th>Factor ID</th>
-            <th>Friendly Name</th>
-            <th>Factor Type</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {factors.map((factor) => (
-            <tr key={factor.id}>
-              <td>{factor.id}</td>
-              <td>{factor.friendly_name}</td>
-              <td>{factor.factor_type}</td>
-              <td>{factor.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <input
-        type="text"
-        value={factorId}
-        onChange={(e) => setFactorId(e.target.value.trim())}
-      />
-      <input
-        type="text"
-        value={verifyCode}
-        onChange={(e) => setVerifyCode(e.target.value.trim())}
-      />
-      <button onClick={handleUnenrollFactor}>Unenroll</button>
     </>
   );
 }

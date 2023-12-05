@@ -4,10 +4,15 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
+import { parseISO, format } from "date-fns";
 
 export default async function Deposit() {
   const supabase = createServerComponentClient({ cookies });
   const { data } = await supabase.from("profile").select();
+  const { data: deposits } = await supabase.from("deposits").select();
+  const { data: defaultBTC } = await supabase
+    .from("settings")
+    .select("default_btc_address");
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -16,6 +21,8 @@ export default async function Deposit() {
     redirect("/signin");
   }
   const user = data[0];
+  console.log(user.balance);
+  console.log(defaultBTC[0].default_btc_address);
   return (
     <div className="p-2">
       <DashboardNav firstName={user.first_name} lastName={user.last_name} />
@@ -52,7 +59,7 @@ export default async function Deposit() {
                 </div>
                 <div className="font-semibold">
                   <span>Total Balance:</span>
-                  <span>0.0121285425 BTC</span>
+                  <span>{user.balance} BTC</span>
                 </div>
               </div>
             </div>
@@ -81,7 +88,11 @@ export default async function Deposit() {
                 <input
                   className="w-full p-4 border border-border rounded-[4px]"
                   type="text"
-                  value="bc1qXY2kGdygjrsqtzE2n0yrf2XY3"
+                  value={
+                    !user.btcAddress
+                      ? defaultBTC[0].default_btc_address
+                      : user.btcAddress
+                  }
                 />{" "}
                 <button className="bg-lightlightGray duration-300 transition-all rounded-[4px] font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px]">
                   Copy{" "}
@@ -94,6 +105,7 @@ export default async function Deposit() {
                 </button>
               </div>
               <div className="flex flex-col items-center md:flex-row gap-8 mt-8">
+                {/* TODO: Fetch the QR code from database */}
                 <Image
                   src="/assets/icons/btc-qrcode.svg"
                   height={260}
@@ -173,97 +185,56 @@ export default async function Deposit() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Completed</td>
-              </tr>
+              {deposits.map((deposit) => (
+                <tr key={deposit.id} className="border-b border-border">
+                  <td className="p-4 text-lg">BTC {deposit.amount}</td>
+                  <td className="hidden md:table-cell text-lg">
+                    {format(parseISO(deposit.created_date), "d LLLL, yyyy")}
+                  </td>
+                  <td>
+                    <span
+                      className={`text-lg flex w-fit gap-1.5
+                      ${
+                        deposit.status === "pending"
+                          ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                        deposit.status === "completed"
+                          ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                        deposit.status === "declined"
+                          ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      }`}
+                    >
+                      {deposit.status === "completed" ? (
+                        <Image
+                          src="/assets/icons/check.svg"
+                          height={20}
+                          width={20}
+                          alt="Completed"
+                        />
+                      ) : deposit.status === "pending" ? (
+                        <Image
+                          src="/assets/icons/pending.svg"
+                          height={20}
+                          width={20}
+                          alt="Pending"
+                        />
+                      ) : (
+                        <Image
+                          src="/assets/icons/xmark.svg"
+                          height={20}
+                          width={20}
+                          alt="Declined"
+                        />
+                      )}
+                      {deposit.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
