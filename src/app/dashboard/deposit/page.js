@@ -89,9 +89,9 @@ export default async function Deposit() {
                   className="w-full p-4 border border-border rounded-[4px]"
                   type="text"
                   value={
-                    !user.btcAddress
+                    !user.company_btc_address
                       ? defaultBTC[0].default_btc_address
-                      : user.btcAddress
+                      : user.company_btc_address
                   }
                 />{" "}
                 <button className="bg-lightlightGray duration-300 transition-all rounded-[4px] font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px]">

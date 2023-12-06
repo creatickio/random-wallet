@@ -52,13 +52,13 @@ export default async function Withdraw() {
                 </div>
                 <div className="font-semibold">
                   <span>Total Balance:</span>
-                  <span>0.0121285425 BTC</span>
+                  <span>{user.balance} BTC</span>
                 </div>
               </div>
             </div>
             {/* deposit row */}
             <div className="flex flex-col gap-2">
-              <p className="text-lg">Deposit Network:</p>
+              <p className="text-lg">Withdraw Network:</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-1 w-full rounded-[4px] border border-border p-1">
                 <div className="w-full text-center border border-border bg-border rounded-[4px] py-3 font-semibold">
                   BTC
@@ -78,9 +78,11 @@ export default async function Withdraw() {
             <div className="flex flex-col gap-2">
               <p className="text-lg">Withdraw Address:</p>
               <div className="flex gap-[10px]">
+                {/* TODO: Allow users to enter their btc address in this field */}
                 <input
                   className="w-full p-4 border border-border rounded-[4px]"
                   type="text"
+                  value={user.btcAddress ? user.btcAddress : ""}
                 />{" "}
                 <button className="bg-lightlightGray duration-300 transition-all justify-center items-center rounded-[4px] font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px]">
                   Paste
