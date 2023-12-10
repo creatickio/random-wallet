@@ -23,7 +23,16 @@ function AccountDetailsComp() {
   useEffect(() => {
     async function fetchData() {
       const supabase = createClientComponentClient();
-      const { data } = await supabase.from("profile").select();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      9;
+      const { data } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("id", session.user.id);
+
+      console.log("data", data);
       const user = data[0];
       setFirstName(user.first_name);
       setLastName(user.last_name);
@@ -43,12 +52,13 @@ function AccountDetailsComp() {
   async function updateProfile(event) {
     event.preventDefault();
     const supabase = createClientComponentClient();
-    const { data } = await supabase.from("profile").select();
-    const userId = data[0].id;
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     setLoading(true);
 
     const updates = {
-      id: userId,
+      id: session.user.id,
       btcAddress: btcAddress,
       phone_number: phoneNumber,
       currency: currency,

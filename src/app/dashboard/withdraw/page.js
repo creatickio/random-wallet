@@ -7,7 +7,6 @@ import React from "react";
 
 export default async function Withdraw() {
   const supabase = createServerComponentClient({ cookies });
-  const { data } = await supabase.from("profile").select();
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -15,6 +14,17 @@ export default async function Withdraw() {
   if (!session) {
     redirect("/signin");
   }
+
+  const { data } = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", session.user.id);
+
+  const { data: withdraws } = await supabase
+    .from("withdraw")
+    .select("*")
+    .eq("profile", session.user.id);
+
   const user = data[0];
   return (
     <div className="p-2">
@@ -158,110 +168,75 @@ export default async function Withdraw() {
             </p>
           </div>
           {/* table */}
-          <table className="table-auto w-full rounded-lg border border-border">
-            <thead className="text-left">
-              <tr className="bg-lightlightGray">
-                <th className="p-4 font-medium text-xl">Amount inserted</th>
-                <th className="hidden md:table-cell font-medium text-xl">
-                  Date
-                </th>
-                <th className="font-medium text-xl">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">BTC 0.002</td>
-                <td className="hidden md:table-cell text-lg">
-                  03 December, 2023
-                </td>
-                <td className="text-lg">Active</td>
-              </tr>
-            </tbody>
-          </table>
+          {withdraws.length > 0 ? (
+            <table className="table-auto w-full rounded-lg border border-border">
+              <thead className="text-left">
+                <tr className="bg-lightlightGray">
+                  <th className="p-4 font-medium text-xl">Amount inserted</th>
+                  <th className="hidden md:table-cell font-medium text-xl">
+                    Date
+                  </th>
+                  <th className="font-medium text-xl">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {withdraws.map((withdraw) => (
+                  <tr key={withdraw.id} className="border-b border-border">
+                    <td className="p-4 text-lg">BTC {withdraw.amount}</td>
+                    <td className="hidden md:table-cell text-lg">
+                      {format(parseISO(withdraw.created_at), "d LLLL, yyyy")}
+                    </td>
+                    <td>
+                      <span
+                        className={`text-lg flex w-fit gap-1.5
+                      ${
+                        withdraw.status === "pending"
+                          ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                          withdraw.status === "completed"
+                            ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                            : ""
+                        } ${
+                          withdraw.status === "declined"
+                            ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                            : ""
+                        }`}
+                      >
+                        {withdraw.status === "completed" ? (
+                          <Image
+                            src="/assets/icons/check.svg"
+                            height={20}
+                            width={20}
+                            alt="Completed"
+                          />
+                        ) : withdraw.status === "pending" ? (
+                          <Image
+                            src="/assets/icons/pending.svg"
+                            height={20}
+                            width={20}
+                            alt="Pending"
+                          />
+                        ) : (
+                          <Image
+                            src="/assets/icons/xmark.svg"
+                            height={20}
+                            width={20}
+                            alt="Declined"
+                          />
+                        )}
+                        {withdraw.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="p-6 border border-border text-xl text-center rounded-lg">
+              There&apos;s no withdrawals made yet
+            </div>
+          )}
         </div>
       </div>
     </div>

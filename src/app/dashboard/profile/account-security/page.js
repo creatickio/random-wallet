@@ -14,10 +14,13 @@ import React from "react";
 
 export default async function AccountSecurity() {
   const supabase = createServerComponentClient({ cookies });
-  const { data } = await supabase.from("profile").select();
   const {
     data: { session },
   } = await supabase.auth.getSession();
+  const { data } = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", session.user.id);
 
   if (!session) {
     redirect("/signin");

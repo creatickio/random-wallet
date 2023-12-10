@@ -1,5 +1,6 @@
 "use client";
 import AdminNav from "@/components/admin/nav/page";
+import { usePathname, useParams } from "next/navigation";
 import { Switch } from "@headlessui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
@@ -27,8 +28,7 @@ export default function Profile() {
   const [updatedSuccessfully, setUpdatedSuccessfully] = useState();
   const [error, setError] = useState(null);
   // fetch the id
-  const pathname = window.location.pathname;
-  const id = pathname.split("/").pop();
+  const router = useParams();
 
   useEffect(() => {
     async function fetchData() {
@@ -36,7 +36,7 @@ export default function Profile() {
       const { data, error } = await supabase
         .from("profile")
         .select("*")
-        .eq("id", id)
+        .eq("id", router.id)
         .single();
       const user = data;
       console.log(user);
@@ -56,7 +56,7 @@ export default function Profile() {
       setUserVerifiedEnabled(user.isVerified);
     }
     fetchData();
-  }, []);
+  }, [router.id]);
 
   //   update the data
   async function updateProfile(event) {
@@ -65,7 +65,7 @@ export default function Profile() {
     setLoading(true);
 
     const updates = {
-      id: id,
+      id: router.id,
       first_name: firstName,
       last_name: lastName,
       email: email,

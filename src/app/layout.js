@@ -1,5 +1,6 @@
 import { Archivo } from "next/font/google";
 import "./globals.css";
+import AuthMFA from "@/components/authMFA/page";
 
 const archivo = Archivo({
   weight: ["300", "400", "500", "600", "700"],
