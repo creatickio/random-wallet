@@ -9,12 +9,14 @@ import UserDeposit from "@/components/userDeposit/page";
 
 export default async function Deposit() {
   const supabase = createServerComponentClient({ cookies });
-  const { data: defaultBTC } = await supabase
-    .from("settings")
-    .select("default_btc_address");
   const {
     data: { session },
   } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/signin");
+  }
+
   const { data } = await supabase
     .from("profile")
     .select("*")
@@ -24,12 +26,8 @@ export default async function Deposit() {
     .select("*")
     .eq("profile", session.user.id);
 
-  if (!session) {
-    redirect("/signin");
-  }
   const user = data[0];
-  console.log(user.balance);
-  console.log(defaultBTC[0].default_btc_address);
+
   return (
     <div className="p-2">
       <DashboardNav firstName={user.first_name} lastName={user.last_name} />
