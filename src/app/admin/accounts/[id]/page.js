@@ -5,6 +5,7 @@ import { Switch } from "@headlessui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { parseISO, format } from "date-fns";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,6 +20,8 @@ export default function Profile() {
   const [city, setCity] = useState();
   const [country, setCountry] = useState();
   const [currency, setCurrency] = useState();
+  const [balance, setBalance] = useState();
+  const [companyBtcAddress, setCompanyBtcAddress] = useState();
   const [phoneNumber, setPhoneNumber] = useState();
   const [depositEnabled, setDepositEnabled] = useState();
   const [withdrawEnabled, setWithdrawEnabled] = useState();
@@ -27,19 +30,38 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [updatedSuccessfully, setUpdatedSuccessfully] = useState();
   const [error, setError] = useState(null);
+  const [deposits, setDeposits] = useState([]);
+  const [withdraws, setWithdraws] = useState([]);
+
+  console.log(companyBtcAddress);
+
   // fetch the id
   const router = useParams();
 
   useEffect(() => {
     async function fetchData() {
       const supabase = createClientComponentClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const { data: deposits } = await supabase
+        .from("deposits")
+        .select("*")
+        .eq("profile", session.user.id);
+
+      const { data: withdraws } = await supabase
+        .from("withdraw")
+        .select("*")
+        .eq("profile", session.user.id);
       const { data, error } = await supabase
         .from("profile")
         .select("*")
         .eq("id", router.id)
         .single();
+
       const user = data;
-      console.log(user);
+      setWithdraws(withdraws);
+      setDeposits(deposits);
       setFirstName(user.first_name);
       setLastName(user.last_name);
       setEmail(user.email);
@@ -50,6 +72,8 @@ export default function Profile() {
       setCity(user.city);
       setAddress(user.address);
       setZipCode(user.zipCode);
+      setBalance(user.balance);
+      setCompanyBtcAddress(user.company_btc_address);
       setDepositEnabled(user.depositEnabled);
       setWithdrawEnabled(user.withdrawEnabled);
       setTradeEnabled(user.tradeEnabled);
@@ -75,6 +99,7 @@ export default function Profile() {
       country: country,
       city: city,
       address: address,
+      company_btc_address: companyBtcAddress,
       zip_code: zipCode,
       isVerified: userVerifiedEnabled,
       depositEnabled: depositEnabled,
@@ -115,44 +140,20 @@ export default function Profile() {
   return (
     <div className="flex flex-col gap-2 p-2">
       <AdminNav />
-      <div className="w-full px-4 md:px-6 lg:px-8">
-        {/* head */}
-        <div className="flex flex-row justify-between items-center gap-40 py-8">
-          <div className="w-fit shrink-0">
-            <h2 className="font-medium text-4xl text-darkBlack tracking-tighter">
-              All accounts
-            </h2>
-            <p className="font-light text-xl text-text">
-              Manage accounts and their data here.
-            </p>
-          </div>
-          <div className="w-full relative flex items-center">
-            <Image
-              src="/assets/icons/search.svg"
-              height={16}
-              width={16}
-              alt="search"
-              className="absolute left-8"
-            />
-            <input
-              type="text"
-              placeholder="Search users ..."
-              className="w-full py-6 pl-16 pr-32 border border-border rounded-full text-xl text-darkBlack placeholder-darkBlack"
-            />
-            <button className="py-3 px-4 rounded-full bg-[#D8D8D8] text-darkGray absolute right-6 duration-300 transition-all hover:bg-gray">
-              Search
-            </button>
-          </div>
-          <button className="flex items-center justify-center shrink-0 px-8 py-6 gap-4 text-white bg-darkBlack rounded-full duration-300 transition-all hover:bg-darkGray">
-            Add new account{" "}
-            <Image
-              src="/assets/icons/plus-light.svg"
-              width={16}
-              height={16}
-              alt="plus icon"
-            />
-          </button>
+      {/* head */}
+      <div className="flex flex-row justify-between items-center gap-10 py-8 bg-lightlightGray rounded-2xl px-8">
+        <div className="w-6/12 shrink-0">
+          <h2 className="font-regular text-5xl text-darkBlack tracking-tighter flex gap-[10px]">
+            Balance in BTC <span className="font-bold">{balance} BTC</span>
+          </h2>
         </div>
+        <div className="w-6/12 shrink-0">
+          <h2 className="font-regular text-5xl text-darkBlack tracking-tighter">
+            Balance in Euro
+          </h2>
+        </div>
+      </div>
+      <div className="w-full px-4 md:px-6 lg:px-8">
         {/* A table of accounts */}
         <div className="flex gap-[10px]">
           <div className="w-6/12">
@@ -348,6 +349,8 @@ export default function Profile() {
                     type="text"
                     name="btcAddress"
                     id="btcAddress"
+                    value={companyBtcAddress}
+                    onChange={(e) => setCompanyBtcAddress(e.target.value)}
                     placeholder="Enter the BTC address for this user"
                     className="border border-slate-200 p-4 rounded-lg disabled:bg-darkBlack/20 disabled:cursor-not-allowed"
                   />
@@ -505,98 +508,165 @@ export default function Profile() {
                 <h3 className="font-medium tracking-tighter text-4xl">
                   Deposits
                 </h3>
-                <table className="table-auto w-full rounded-lg border border-border">
-                  <thead className="text-left">
-                    <tr className="bg-lightlightGray">
-                      <th className="p-4 font-medium text-xl">
-                        Amount inserted
-                      </th>
-                      <th className="hidden md:table-cell font-medium text-xl">
-                        Date
-                      </th>
-                      <th className="font-medium text-xl">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Completed</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Completed</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Completed</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Completed</td>
-                    </tr>
-                  </tbody>
-                </table>
+                {/* table */}
+                {deposits.length > 0 ? (
+                  <table className="table-auto w-full rounded-lg border border-border">
+                    <thead className="text-left">
+                      <tr className="bg-lightlightGray">
+                        <th className="p-4 font-medium text-xl">
+                          Amount inserted
+                        </th>
+                        <th className="hidden md:table-cell font-medium text-xl">
+                          Date
+                        </th>
+                        <th className="font-medium text-xl">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {deposits.map((deposit) => (
+                        <tr key={deposit.id} className="border-b border-border">
+                          <td className="p-4 text-lg">BTC {deposit.amount}</td>
+                          <td className="hidden md:table-cell text-lg">
+                            {format(
+                              parseISO(deposit.created_date),
+                              "d LLLL, yyyy"
+                            )}
+                          </td>
+                          <td>
+                            <span
+                              className={`text-lg flex w-fit gap-1.5
+                      ${
+                        deposit.status === "pending"
+                          ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                                deposit.status === "completed"
+                                  ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                  : ""
+                              } ${
+                                deposit.status === "declined"
+                                  ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                  : ""
+                              }`}
+                            >
+                              {deposit.status === "completed" ? (
+                                <Image
+                                  src="/assets/icons/check.svg"
+                                  height={20}
+                                  width={20}
+                                  alt="Completed"
+                                />
+                              ) : deposit.status === "pending" ? (
+                                <Image
+                                  src="/assets/icons/pending.svg"
+                                  height={20}
+                                  width={20}
+                                  alt="Pending"
+                                />
+                              ) : (
+                                <Image
+                                  src="/assets/icons/xmark.svg"
+                                  height={20}
+                                  width={20}
+                                  alt="Declined"
+                                />
+                              )}
+                              {deposit.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="p-6 border border-border text-xl text-center rounded-lg">
+                    There&apos;s no deposits made yet
+                  </div>
+                )}
               </div>
               {/* withdraw table */}
               <div className="flex flex-col gap-[10px] col-span-2">
                 <h3 className="font-medium tracking-tighter text-4xl">
                   Withdraw
                 </h3>
-                <table className="table-auto w-full rounded-lg border border-border">
-                  <thead className="text-left">
-                    <tr className="bg-lightlightGray">
-                      <th className="p-4 font-medium text-xl">
-                        Amount inserted
-                      </th>
-                      <th className="hidden md:table-cell font-medium text-xl">
-                        Date
-                      </th>
-                      <th className="font-medium text-xl">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Active</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Active</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Active</td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="p-4 text-lg">BTC 0.002</td>
-                      <td className="hidden md:table-cell text-lg">
-                        03 December, 2023
-                      </td>
-                      <td className="text-lg">Active</td>
-                    </tr>
-                  </tbody>
-                </table>
+                {/* table */}
+                {withdraws.length > 0 ? (
+                  <table className="table-auto w-full rounded-lg border border-border">
+                    <thead className="text-left">
+                      <tr className="bg-lightlightGray">
+                        <th className="p-4 font-medium text-xl">
+                          Amount inserted
+                        </th>
+                        <th className="hidden md:table-cell font-medium text-xl">
+                          Date
+                        </th>
+                        <th className="font-medium text-xl">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {withdraws.map((withdraw) => (
+                        <tr
+                          key={withdraw.id}
+                          className="border-b border-border"
+                        >
+                          <td className="p-4 text-lg">BTC {withdraw.amount}</td>
+                          <td className="hidden md:table-cell text-lg">
+                            {format(
+                              parseISO(withdraw.created_at),
+                              "d LLLL, yyyy"
+                            )}
+                          </td>
+                          <td>
+                            <span
+                              className={`text-lg flex w-fit gap-1.5
+                      ${
+                        withdraw.status === "pending"
+                          ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                                withdraw.status === "completed"
+                                  ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                  : ""
+                              } ${
+                                withdraw.status === "declined"
+                                  ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                  : ""
+                              }`}
+                            >
+                              {withdraw.status === "completed" ? (
+                                <Image
+                                  src="/assets/icons/check.svg"
+                                  height={20}
+                                  width={20}
+                                  alt="Completed"
+                                />
+                              ) : withdraw.status === "pending" ? (
+                                <Image
+                                  src="/assets/icons/pending.svg"
+                                  height={20}
+                                  width={20}
+                                  alt="Pending"
+                                />
+                              ) : (
+                                <Image
+                                  src="/assets/icons/xmark.svg"
+                                  height={20}
+                                  width={20}
+                                  alt="Declined"
+                                />
+                              )}
+                              {withdraw.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="p-6 border border-border text-xl text-center rounded-lg">
+                    There&apos;s no withdrawals made yet
+                  </div>
+                )}
               </div>
               {/* trade table */}
               <div className="flex flex-col gap-[10px] col-span-2">
