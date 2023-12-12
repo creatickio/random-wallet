@@ -13,10 +13,11 @@ export default function UserWithdraw() {
   const [network, setNetwork] = useState("btc");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [amountError, setAmountError] = useState("");
+  const [isWithdrawEnabled, setWithdrawEnabled] = useState();
   let [isOpen, setIsOpen] = useState(false);
 
   const router = useRouter();
-
+  console.log("Is Withdraw Enabled:", isWithdrawEnabled);
   function closeModal() {
     setIsOpen(false);
   }
@@ -38,6 +39,7 @@ export default function UserWithdraw() {
 
       const user = data[0];
       setBalance(user.balance);
+      setWithdrawEnabled(user.withdrawEnabled);
       setUserBtcAddress(user.btcAddress);
     }
     getData();
@@ -47,7 +49,6 @@ export default function UserWithdraw() {
     navigator.clipboard
       .readText()
       .then((text) => {
-        console.log("Clipboard content: ", text);
         setUserBtcAddress(text);
         toast.success("BTC Address pasted!", {
           position: "top-right",
@@ -256,11 +257,13 @@ export default function UserWithdraw() {
             max={balance}
             step={0.1}
             value={withdrawAmount}
+            disabled={!isWithdrawEnabled}
             onChange={(e) => setWithdrawAmount(e.target.value)}
           />{" "}
           <button
             onClick={() => setWithdrawAmount(balance)}
-            className="bg-lightlightGray duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px]"
+            disabled={!isWithdrawEnabled}
+            className="bg-lightlightGray duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightlightGray disabled:cursor-not-allowed"
           >
             MAX
             <Image
@@ -272,22 +275,32 @@ export default function UserWithdraw() {
           </button>
         </div>
         {/* Amount error */}
-        {amountError && <p className="text-red-600">{amountError}</p>}
+        {isWithdrawEnabled
+          ? amountError && <p className="text-red-600">{amountError}</p>
+          : ""}
       </div>
       {/* proceed withdraw */}
-      <button
-        disabled={amountError}
-        onClick={openModal}
-        className="text-darkBlack bg-primary font-medium text-xl rounded-full p-6 flex items-center justify-center gap-4 duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed "
-      >
-        Proceed withdraw
-        <Image
-          src="/assets/icons/arrow-right.svg"
-          height={16}
-          width={16}
-          alt="Arrow Right"
-        />
-      </button>
+      {isWithdrawEnabled ? (
+        <button
+          disabled={amountError}
+          onClick={openModal}
+          className="text-darkBlack bg-primary font-medium text-xl rounded-full p-6 flex items-center justify-center gap-4 duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed "
+        >
+          Proceed withdraw
+          <Image
+            src="/assets/icons/arrow-right.svg"
+            height={16}
+            width={16}
+            alt="Arrow Right"
+          />
+        </button>
+      ) : (
+        <div className="p-6 rounded-2xl bg-red-300">
+          You are not allowed to withdraw just yet. Please contact our support
+          to enable the withdraw
+        </div>
+      )}
+
       {/* tips row */}
       <div className="flex flex-col gap-2">
         <p className="text-lg">Tips:</p>
