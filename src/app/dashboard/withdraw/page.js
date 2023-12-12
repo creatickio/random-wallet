@@ -71,56 +71,60 @@ export default async function Withdraw() {
                 </tr>
               </thead>
               <tbody>
-                {withdraws.map((withdraw) => (
-                  <tr key={withdraw.id} className="border-b border-border">
-                    <td className="p-4 text-lg">BTC {withdraw.amount}</td>
-                    <td className="hidden md:table-cell text-lg">
-                      {format(parseISO(withdraw.created_at), "d LLLL, yyyy")}
-                    </td>
-                    <td>
-                      <span
-                        className={`text-lg flex w-fit gap-1.5
+                {withdraws
+                  .sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  )
+                  .map((withdraw) => (
+                    <tr key={withdraw.id} className="border-b border-border">
+                      <td className="p-4 text-lg">BTC {withdraw.amount}</td>
+                      <td className="hidden md:table-cell text-lg">
+                        {format(parseISO(withdraw.created_at), "d LLLL, yyyy")}
+                      </td>
+                      <td>
+                        <span
+                          className={`text-lg flex w-fit gap-1.5
                       ${
                         withdraw.status === "pending"
                           ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
                           : ""
                       } ${
-                          withdraw.status === "completed"
-                            ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                            : ""
-                        } ${
-                          withdraw.status === "declined"
-                            ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                            : ""
-                        }`}
-                      >
-                        {withdraw.status === "completed" ? (
-                          <Image
-                            src="/assets/icons/check.svg"
-                            height={20}
-                            width={20}
-                            alt="Completed"
-                          />
-                        ) : withdraw.status === "pending" ? (
-                          <Image
-                            src="/assets/icons/pending.svg"
-                            height={20}
-                            width={20}
-                            alt="Pending"
-                          />
-                        ) : (
-                          <Image
-                            src="/assets/icons/xmark.svg"
-                            height={20}
-                            width={20}
-                            alt="Declined"
-                          />
-                        )}
-                        {withdraw.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                            withdraw.status === "completed"
+                              ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                              : ""
+                          } ${
+                            withdraw.status === "declined"
+                              ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                              : ""
+                          }`}
+                        >
+                          {withdraw.status === "completed" ? (
+                            <Image
+                              src="/assets/icons/check.svg"
+                              height={20}
+                              width={20}
+                              alt="Completed"
+                            />
+                          ) : withdraw.status === "pending" ? (
+                            <Image
+                              src="/assets/icons/pending.svg"
+                              height={20}
+                              width={20}
+                              alt="Pending"
+                            />
+                          ) : (
+                            <Image
+                              src="/assets/icons/xmark.svg"
+                              height={20}
+                              width={20}
+                              alt="Declined"
+                            />
+                          )}
+                          {withdraw.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           ) : (
