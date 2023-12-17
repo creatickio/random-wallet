@@ -221,6 +221,55 @@ export default function Profile() {
     }
   }
 
+  const [btcPrice, setBtcPrice] = useState();
+
+  // convert btc to ${currency}
+  useEffect(() => {
+    async function convertBtcToCurrency() {
+      const cryptoFetch = await fetch(
+        `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`
+      );
+      const cryptoData = await cryptoFetch.json();
+      const btcPrice = cryptoData.bitcoin;
+      return setBtcPrice(btcPrice);
+    }
+    convertBtcToCurrency();
+  }, [currency]);
+
+  console.log(btcPrice);
+
+  function getCovertedPrice() {
+    if (currency === "EUR") {
+      return (
+        <div className="flex gap-2">
+          <span>€</span>
+          <span>{(balance * btcPrice.eur).toLocaleString()}</span>
+        </div>
+      );
+    } else if (currency === "CHF") {
+      return (
+        <div className="flex gap-2">
+          <span>₣</span>
+          <span>{(balance * btcPrice.chf).toLocaleString()}</span>
+        </div>
+      );
+    } else if (currency === "GBP") {
+      return (
+        <div className="flex gap-2">
+          <span>£</span>
+          <span>{(balance * btcPrice.gbp).toLocaleString()}</span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex gap-2">
+          <span>$</span>
+          <span>{(balance * btcPrice.usd).toLocaleString()}</span>
+        </div>
+      );
+    }
+  }
+
   return (
     <div className="flex flex-col gap-2 p-2">
       <AdminNav />
@@ -232,8 +281,9 @@ export default function Profile() {
           </h2>
         </div>
         <div className="w-6/12 shrink-0">
-          <h2 className="font-regular text-5xl text-darkBlack tracking-tighter">
-            Balance in Euro
+          <h2 className="font-regular flex gap-[10px] text-5xl text-darkBlack tracking-tighter">
+            Balance in {currency}{" "}
+            <span className="font-bold">{btcPrice && getCovertedPrice()}</span>
           </h2>
         </div>
       </div>
