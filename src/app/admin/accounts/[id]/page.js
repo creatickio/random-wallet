@@ -1,11 +1,12 @@
 "use client";
 import AdminNav from "@/components/admin/nav/page";
 import { usePathname, useParams } from "next/navigation";
-import { Switch } from "@headlessui/react";
+import { Switch, Menu, Transition } from "@headlessui/react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { parseISO, format } from "date-fns";
+import { parseISO, format, set } from "date-fns";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -33,7 +34,11 @@ export default function Profile() {
   const [deposits, setDeposits] = useState([]);
   const [withdraws, setWithdraws] = useState([]);
 
-  console.log(companyBtcAddress);
+  // deposit data
+  const [currentDepositStatus, setCurrentDepositStatus] = useState();
+  const [currentDepositId, setCurrentDepositId] = useState();
+  const [newDepositStatus, setNewDepositStatus] = useState("");
+  const [currentDepositAmount, setCurrentDepositAmount] = useState();
 
   // fetch the id
   const router = useParams();
@@ -47,12 +52,12 @@ export default function Profile() {
       const { data: deposits } = await supabase
         .from("deposits")
         .select("*")
-        .eq("profile", session.user.id);
+        .eq("profile", router.id);
 
       const { data: withdraws } = await supabase
         .from("withdraw")
         .select("*")
-        .eq("profile", session.user.id);
+        .eq("profile", router.id);
       const { data, error } = await supabase
         .from("profile")
         .select("*")
@@ -134,6 +139,85 @@ export default function Profile() {
         progress: undefined,
         theme: "colored",
       });
+    }
+  }
+
+  // Change status of the deposit
+  async function changeDepositStatus() {
+    console.log("Current Deposit Status", currentDepositStatus);
+    console.log("Current Deposit Id", currentDepositId);
+    console.log("New Deposit Status", newDepositStatus);
+    console.log("Current Deposit Amount", currentDepositAmount);
+
+    const supabase = createClientComponentClient();
+    const updates = {
+      id: currentDepositId,
+      status: newDepositStatus,
+    };
+
+    const { error } = await supabase.from("deposits").upsert(updates);
+
+    if (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      toast.success("Status updated successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      const { data: deposits } = await supabase
+        .from("deposits")
+        .select("*")
+        .eq("profile", router.id);
+
+      setDeposits(deposits);
+
+      if (newDepositStatus === "completed") {
+        const { data, error } = await supabase
+          .from("profile")
+          .select("*")
+          .eq("id", router.id)
+          .single();
+
+        const newBalance = balance + currentDepositAmount;
+        const updates = {
+          id: router.id,
+          balance: newBalance,
+        };
+        const { error: error3 } = await supabase
+          .from("profile")
+          .upsert(updates);
+        setBalance(newBalance);
+      } else if (
+        (currentDepositStatus === "completed" &&
+          newDepositStatus === "pending") ||
+        (currentDepositStatus === "completed" &&
+          newDepositStatus === "declined")
+      ) {
+        const lowBalance = balance - currentDepositAmount;
+        const updates = {
+          id: router.id,
+          balance: lowBalance,
+        };
+        const { error: error2 } = await supabase
+          .from("profile")
+          .upsert(updates);
+        setBalance(lowBalance);
+      }
     }
   }
 
@@ -533,46 +617,180 @@ export default function Profile() {
                             )}
                           </td>
                           <td>
-                            <span
-                              className={`text-lg flex w-fit gap-1.5
+                            <Menu
+                              as="div"
+                              className="relative inline-block text-left"
+                            >
+                              <div>
+                                <Menu.Button
+                                  className={`text-lg flex items-center gap-1.5
                       ${
                         deposit.status === "pending"
                           ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
                           : ""
                       } ${
-                                deposit.status === "completed"
-                                  ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                                  : ""
-                              } ${
-                                deposit.status === "declined"
-                                  ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                                  : ""
-                              }`}
-                            >
-                              {deposit.status === "completed" ? (
-                                <Image
-                                  src="/assets/icons/check.svg"
-                                  height={20}
-                                  width={20}
-                                  alt="Completed"
-                                />
-                              ) : deposit.status === "pending" ? (
-                                <Image
-                                  src="/assets/icons/pending.svg"
-                                  height={20}
-                                  width={20}
-                                  alt="Pending"
-                                />
-                              ) : (
-                                <Image
-                                  src="/assets/icons/xmark.svg"
-                                  height={20}
-                                  width={20}
-                                  alt="Declined"
-                                />
-                              )}
-                              {deposit.status}
-                            </span>
+                                    deposit.status === "completed"
+                                      ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                      : ""
+                                  } ${
+                                    deposit.status === "declined"
+                                      ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                      : ""
+                                  }`}
+                                  onClick={() => {
+                                    setCurrentDepositStatus(deposit.status);
+                                    setCurrentDepositId(deposit.id);
+                                    setCurrentDepositAmount(deposit.amount);
+                                  }}
+                                >
+                                  {deposit.status}
+                                  <ChevronDownIcon
+                                    className="-mr-1 ml-2 h-5 w-5 text-darkBlack hover:text-violet-100"
+                                    aria-hidden="true"
+                                  />
+                                </Menu.Button>
+                              </div>
+                              <Transition
+                                as={Fragment}
+                                enter="transition ease-out duration-100"
+                                enterFrom="transform opacity-0 scale-95"
+                                enterTo="transform opacity-100 scale-100"
+                                leave="transition ease-in duration-75"
+                                leaveFrom="transform opacity-100 scale-100"
+                                leaveTo="transform opacity-0 scale-95"
+                              >
+                                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg z-50 ring-1 ring-black/5 focus:outline-none">
+                                  <div className="px-1 py-1">
+                                    {deposit.status === "completed" && (
+                                      <>
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <button
+                                              onClick={() =>
+                                                changeDepositStatus()
+                                              }
+                                              onMouseEnter={() => {
+                                                setNewDepositStatus("pending");
+                                              }}
+                                              className={`${
+                                                active
+                                                  ? "bg-primary text-darkBlack"
+                                                  : "text-gray-900"
+                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                            >
+                                              Pending
+                                            </button>
+                                          )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <button
+                                              onClick={() =>
+                                                changeDepositStatus()
+                                              }
+                                              onMouseEnter={() => {
+                                                setNewDepositStatus("declined");
+                                              }}
+                                              className={`${
+                                                active
+                                                  ? "bg-primary text-darkBlack"
+                                                  : "text-gray-900"
+                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                            >
+                                              Declined
+                                            </button>
+                                          )}
+                                        </Menu.Item>
+                                      </>
+                                    )}
+                                    {deposit.status === "pending" && (
+                                      <>
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <button
+                                              onClick={() =>
+                                                changeDepositStatus()
+                                              }
+                                              onMouseEnter={() =>
+                                                setNewDepositStatus("completed")
+                                              }
+                                              className={`${
+                                                active
+                                                  ? "bg-primary text-darkBlack"
+                                                  : "text-gray-900"
+                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                            >
+                                              Completed
+                                            </button>
+                                          )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <button
+                                              onClick={() =>
+                                                changeDepositStatus()
+                                              }
+                                              onMouseEnter={() =>
+                                                setNewDepositStatus("declined")
+                                              }
+                                              className={`${
+                                                active
+                                                  ? "bg-primary text-darkBlack"
+                                                  : "text-gray-900"
+                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                            >
+                                              Declined
+                                            </button>
+                                          )}
+                                        </Menu.Item>
+                                      </>
+                                    )}
+                                    {deposit.status === "declined" && (
+                                      <>
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <button
+                                              onClick={() =>
+                                                changeDepositStatus()
+                                              }
+                                              onMouseEnter={() =>
+                                                setNewDepositStatus("completed")
+                                              }
+                                              className={`${
+                                                active
+                                                  ? "bg-primary text-darkBlack"
+                                                  : "text-gray-900"
+                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                            >
+                                              Completed
+                                            </button>
+                                          )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <button
+                                              onClick={() =>
+                                                changeDepositStatus()
+                                              }
+                                              onMouseEnter={() =>
+                                                setNewDepositStatus("pending")
+                                              }
+                                              className={`${
+                                                active
+                                                  ? "bg-primary text-darkBlack"
+                                                  : "text-gray-900"
+                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                            >
+                                              Pending
+                                            </button>
+                                          )}
+                                        </Menu.Item>
+                                      </>
+                                    )}
+                                  </div>
+                                </Menu.Items>
+                              </Transition>
+                            </Menu>
                           </td>
                         </tr>
                       ))}
