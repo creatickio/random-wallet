@@ -36,6 +36,27 @@ function AdminPage() {
               </button>
             </div>
           </div>
+          {/* table */}
+          <table className="table-auto w-full rounded-lg border border-border">
+            <thead className="text-left">
+              <tr className="bg-lightlightGray">
+                <th className="p-4 font-medium text-xl">First name</th>
+                <th className="font-medium text-xl">Last name</th>
+                <th className="font-medium text-xl">Email</th>
+                <th className="font-medium text-xl">Last login</th>
+                <th className="font-medium text-xl">IP address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="p-4 text-lg">asdasd</td>
+                <td className="text-lg">asdasd</td>
+                <td className="text-lg">asdasd</td>
+                <td className="text-lg">BTC </td>
+                <td className="text-lg">BTC </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

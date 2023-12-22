@@ -1,6 +1,7 @@
 import { Archivo } from "next/font/google";
 import "./globals.css";
-import AuthMFA from "@/components/authMFA/page";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const archivo = Archivo({
   weight: ["300", "400", "500", "600", "700"],
@@ -16,7 +17,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={archivo.className}>{children}</body>
+      <body className={archivo.className}>
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

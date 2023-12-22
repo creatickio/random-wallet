@@ -1,7 +1,7 @@
 "use client";
 import AdminNav from "@/components/admin/nav/page";
 import { usePathname, useParams } from "next/navigation";
-import { Switch, Menu, Transition } from "@headlessui/react";
+import { Dialog, Switch, Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -11,6 +11,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Profile() {
+  // fetch the id
+  const router = useParams();
   // store the data
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
@@ -34,14 +36,110 @@ export default function Profile() {
   const [deposits, setDeposits] = useState([]);
   const [withdraws, setWithdraws] = useState([]);
 
+  // withdraw data
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [currentWithdrawStatus, setCurrentWithdrawStatus] = useState();
+  const [currentWithdrawId, setCurrentWithdrawId] = useState();
+  const [newWithdrawStatus, setNewWithdrawStatus] = useState("");
+  const [currentWithdrawAmount, setCurrentWithdrawAmount] = useState();
+  const [addWithdrawAmount, setAddWithdrawAmount] = useState();
+  const [addWithdrawAddress, setAddWithdrawAddress] = useState();
+
+  function closeWithdrawModal() {
+    setIsWithdrawModalOpen(false);
+  }
+  function openWithdrawModal() {
+    setIsWithdrawModalOpen(true);
+  }
+
+  async function createNewWithdraw(e) {
+    // e.preventDefault();
+    const supabase = createClientComponentClient();
+    const updates = {
+      profile: router.id,
+      amount: addWithdrawAmount,
+      withdraw_address: addWithdrawAddress,
+    };
+
+    const { error } = await supabase.from("withdraw").upsert(updates);
+
+    if (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      toast.success("Withdraw created successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setIsWithdrawModalOpen(false);
+    }
+  }
+
   // deposit data
   const [currentDepositStatus, setCurrentDepositStatus] = useState();
   const [currentDepositId, setCurrentDepositId] = useState();
   const [newDepositStatus, setNewDepositStatus] = useState("");
   const [currentDepositAmount, setCurrentDepositAmount] = useState();
+  const [addDepositAmount, setAddDepositAmount] = useState();
 
-  // fetch the id
-  const router = useParams();
+  // deposit modal state
+  let [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  function closeDepositModal() {
+    setIsDepositModalOpen(false);
+  }
+  function openDepositModal() {
+    setIsDepositModalOpen(true);
+  }
+
+  async function createNewDeposit(e) {
+    // e.preventDefault();
+    const supabase = createClientComponentClient();
+    const updates = {
+      profile: router.id,
+      amount: addDepositAmount,
+    };
+
+    const { error } = await supabase.from("deposits").upsert(updates);
+
+    if (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      toast.success("Deposit added successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setIsDepositModalOpen(false);
+    }
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -626,22 +724,30 @@ export default function Profile() {
                   </button>
                 </div>
               </div>
-              {/* {error && <p>{error}</p>}
-              {updatedSuccessfully !== "" && (
-                <p className="text-center text-green-500">
-                  {updatedSuccessfully}
-                </p>
-              )} */}
             </form>
           </div>
           <div className="w-6/12">
             {/* tables */}
-            <div className="px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 py-8">
+            <div className="pl-8 grid grid-cols-1 lg:grid-cols-2 gap-16 py-8">
               {/* deposit table */}
               <div className="flex flex-col gap-[10px] col-span-2">
-                <h3 className="font-medium tracking-tighter text-4xl">
-                  Deposits
-                </h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium tracking-tighter text-4xl">
+                    Deposits
+                  </h3>
+                  <button
+                    onClick={openDepositModal}
+                    className="flex gap-4 items-center bg-darkBlack w-full lg:w-fit justify-center rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70"
+                  >
+                    New deposit
+                    <Image
+                      src="/assets/icons/plus-light.svg"
+                      height={16}
+                      width={16}
+                      alt="Trade"
+                    />
+                  </button>
+                </div>
                 {/* table */}
                 {deposits.length > 0 ? (
                   <table className="table-auto w-full rounded-lg border border-border">
@@ -657,193 +763,213 @@ export default function Profile() {
                       </tr>
                     </thead>
                     <tbody>
-                      {deposits.map((deposit) => (
-                        <tr key={deposit.id} className="border-b border-border">
-                          <td className="p-4 text-lg">BTC {deposit.amount}</td>
-                          <td className="hidden md:table-cell text-lg">
-                            {format(
-                              parseISO(deposit.created_date),
-                              "d LLLL, yyyy"
-                            )}
-                          </td>
-                          <td>
-                            <Menu
-                              as="div"
-                              className="relative inline-block text-left"
-                            >
-                              <div>
-                                <Menu.Button
-                                  className={`text-lg flex items-center gap-1.5
+                      {deposits
+                        .sort(
+                          (a, b) =>
+                            new Date(b.created_date) - new Date(a.created_date)
+                        )
+                        .map((deposit) => (
+                          <tr
+                            key={deposit.id}
+                            className="border-b border-border"
+                          >
+                            <td className="p-4 text-lg">
+                              BTC {deposit.amount}
+                            </td>
+                            <td className="hidden md:table-cell text-lg">
+                              {format(
+                                parseISO(deposit.created_date),
+                                "d LLLL, yyyy"
+                              )}
+                            </td>
+                            <td>
+                              <Menu
+                                as="div"
+                                className="relative inline-block text-left"
+                              >
+                                <div>
+                                  <Menu.Button
+                                    className={`text-lg flex items-center gap-1.5
                       ${
                         deposit.status === "pending"
                           ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
                           : ""
                       } ${
-                                    deposit.status === "completed"
-                                      ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                                      : ""
-                                  } ${
-                                    deposit.status === "declined"
-                                      ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                                      : ""
-                                  }`}
-                                  onClick={() => {
-                                    setCurrentDepositStatus(deposit.status);
-                                    setCurrentDepositId(deposit.id);
-                                    setCurrentDepositAmount(deposit.amount);
-                                  }}
+                                      deposit.status === "completed"
+                                        ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                        : ""
+                                    } ${
+                                      deposit.status === "declined"
+                                        ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                        : ""
+                                    }`}
+                                    onClick={() => {
+                                      setCurrentDepositStatus(deposit.status);
+                                      setCurrentDepositId(deposit.id);
+                                      setCurrentDepositAmount(deposit.amount);
+                                    }}
+                                  >
+                                    {deposit.status}
+                                    <ChevronDownIcon
+                                      className="-mr-1 ml-2 h-5 w-5 text-darkBlack hover:text-violet-100"
+                                      aria-hidden="true"
+                                    />
+                                  </Menu.Button>
+                                </div>
+                                <Transition
+                                  as={Fragment}
+                                  enter="transition ease-out duration-100"
+                                  enterFrom="transform opacity-0 scale-95"
+                                  enterTo="transform opacity-100 scale-100"
+                                  leave="transition ease-in duration-75"
+                                  leaveFrom="transform opacity-100 scale-100"
+                                  leaveTo="transform opacity-0 scale-95"
                                 >
-                                  {deposit.status}
-                                  <ChevronDownIcon
-                                    className="-mr-1 ml-2 h-5 w-5 text-darkBlack hover:text-violet-100"
-                                    aria-hidden="true"
-                                  />
-                                </Menu.Button>
-                              </div>
-                              <Transition
-                                as={Fragment}
-                                enter="transition ease-out duration-100"
-                                enterFrom="transform opacity-0 scale-95"
-                                enterTo="transform opacity-100 scale-100"
-                                leave="transition ease-in duration-75"
-                                leaveFrom="transform opacity-100 scale-100"
-                                leaveTo="transform opacity-0 scale-95"
-                              >
-                                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg z-50 ring-1 ring-black/5 focus:outline-none">
-                                  <div className="px-1 py-1">
-                                    {deposit.status === "completed" && (
-                                      <>
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <button
-                                              onClick={() =>
-                                                changeDepositStatus()
-                                              }
-                                              onMouseEnter={() => {
-                                                setNewDepositStatus("pending");
-                                              }}
-                                              className={`${
-                                                active
-                                                  ? "bg-primary text-darkBlack"
-                                                  : "text-gray-900"
-                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                            >
-                                              Pending
-                                            </button>
-                                          )}
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <button
-                                              onClick={() =>
-                                                changeDepositStatus()
-                                              }
-                                              onMouseEnter={() => {
-                                                setNewDepositStatus("declined");
-                                              }}
-                                              className={`${
-                                                active
-                                                  ? "bg-primary text-darkBlack"
-                                                  : "text-gray-900"
-                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                            >
-                                              Declined
-                                            </button>
-                                          )}
-                                        </Menu.Item>
-                                      </>
-                                    )}
-                                    {deposit.status === "pending" && (
-                                      <>
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <button
-                                              onClick={() =>
-                                                changeDepositStatus()
-                                              }
-                                              onMouseEnter={() =>
-                                                setNewDepositStatus("completed")
-                                              }
-                                              className={`${
-                                                active
-                                                  ? "bg-primary text-darkBlack"
-                                                  : "text-gray-900"
-                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                            >
-                                              Completed
-                                            </button>
-                                          )}
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <button
-                                              onClick={() =>
-                                                changeDepositStatus()
-                                              }
-                                              onMouseEnter={() =>
-                                                setNewDepositStatus("declined")
-                                              }
-                                              className={`${
-                                                active
-                                                  ? "bg-primary text-darkBlack"
-                                                  : "text-gray-900"
-                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                            >
-                                              Declined
-                                            </button>
-                                          )}
-                                        </Menu.Item>
-                                      </>
-                                    )}
-                                    {deposit.status === "declined" && (
-                                      <>
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <button
-                                              onClick={() =>
-                                                changeDepositStatus()
-                                              }
-                                              onMouseEnter={() =>
-                                                setNewDepositStatus("completed")
-                                              }
-                                              className={`${
-                                                active
-                                                  ? "bg-primary text-darkBlack"
-                                                  : "text-gray-900"
-                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                            >
-                                              Completed
-                                            </button>
-                                          )}
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                          {({ active }) => (
-                                            <button
-                                              onClick={() =>
-                                                changeDepositStatus()
-                                              }
-                                              onMouseEnter={() =>
-                                                setNewDepositStatus("pending")
-                                              }
-                                              className={`${
-                                                active
-                                                  ? "bg-primary text-darkBlack"
-                                                  : "text-gray-900"
-                                              } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                            >
-                                              Pending
-                                            </button>
-                                          )}
-                                        </Menu.Item>
-                                      </>
-                                    )}
-                                  </div>
-                                </Menu.Items>
-                              </Transition>
-                            </Menu>
-                          </td>
-                        </tr>
-                      ))}
+                                  <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg z-50 ring-1 ring-black/5 focus:outline-none">
+                                    <div className="px-1 py-1">
+                                      {deposit.status === "completed" && (
+                                        <>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <button
+                                                onClick={() =>
+                                                  changeDepositStatus()
+                                                }
+                                                onMouseEnter={() => {
+                                                  setNewDepositStatus(
+                                                    "pending"
+                                                  );
+                                                }}
+                                                className={`${
+                                                  active
+                                                    ? "bg-primary text-darkBlack"
+                                                    : "text-gray-900"
+                                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                              >
+                                                Pending
+                                              </button>
+                                            )}
+                                          </Menu.Item>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <button
+                                                onClick={() =>
+                                                  changeDepositStatus()
+                                                }
+                                                onMouseEnter={() => {
+                                                  setNewDepositStatus(
+                                                    "declined"
+                                                  );
+                                                }}
+                                                className={`${
+                                                  active
+                                                    ? "bg-primary text-darkBlack"
+                                                    : "text-gray-900"
+                                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                              >
+                                                Declined
+                                              </button>
+                                            )}
+                                          </Menu.Item>
+                                        </>
+                                      )}
+                                      {deposit.status === "pending" && (
+                                        <>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <button
+                                                onClick={() =>
+                                                  changeDepositStatus()
+                                                }
+                                                onMouseEnter={() =>
+                                                  setNewDepositStatus(
+                                                    "completed"
+                                                  )
+                                                }
+                                                className={`${
+                                                  active
+                                                    ? "bg-primary text-darkBlack"
+                                                    : "text-gray-900"
+                                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                              >
+                                                Completed
+                                              </button>
+                                            )}
+                                          </Menu.Item>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <button
+                                                onClick={() =>
+                                                  changeDepositStatus()
+                                                }
+                                                onMouseEnter={() =>
+                                                  setNewDepositStatus(
+                                                    "declined"
+                                                  )
+                                                }
+                                                className={`${
+                                                  active
+                                                    ? "bg-primary text-darkBlack"
+                                                    : "text-gray-900"
+                                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                              >
+                                                Declined
+                                              </button>
+                                            )}
+                                          </Menu.Item>
+                                        </>
+                                      )}
+                                      {deposit.status === "declined" && (
+                                        <>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <button
+                                                onClick={() =>
+                                                  changeDepositStatus()
+                                                }
+                                                onMouseEnter={() =>
+                                                  setNewDepositStatus(
+                                                    "completed"
+                                                  )
+                                                }
+                                                className={`${
+                                                  active
+                                                    ? "bg-primary text-darkBlack"
+                                                    : "text-gray-900"
+                                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                              >
+                                                Completed
+                                              </button>
+                                            )}
+                                          </Menu.Item>
+                                          <Menu.Item>
+                                            {({ active }) => (
+                                              <button
+                                                onClick={() =>
+                                                  changeDepositStatus()
+                                                }
+                                                onMouseEnter={() =>
+                                                  setNewDepositStatus("pending")
+                                                }
+                                                className={`${
+                                                  active
+                                                    ? "bg-primary text-darkBlack"
+                                                    : "text-gray-900"
+                                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                              >
+                                                Pending
+                                              </button>
+                                            )}
+                                          </Menu.Item>
+                                        </>
+                                      )}
+                                    </div>
+                                  </Menu.Items>
+                                </Transition>
+                              </Menu>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 ) : (
@@ -854,9 +980,23 @@ export default function Profile() {
               </div>
               {/* withdraw table */}
               <div className="flex flex-col gap-[10px] col-span-2">
-                <h3 className="font-medium tracking-tighter text-4xl">
-                  Withdraw
-                </h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium tracking-tighter text-4xl">
+                    Withdraws
+                  </h3>
+                  <button
+                    onClick={openWithdrawModal}
+                    className="flex gap-4 items-center bg-darkBlack w-full lg:w-fit justify-center rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70"
+                  >
+                    New withdraw
+                    <Image
+                      src="/assets/icons/plus-light.svg"
+                      height={16}
+                      width={16}
+                      alt="Trade"
+                    />
+                  </button>
+                </div>
                 {/* table */}
                 {withdraws.length > 0 ? (
                   <table className="table-auto w-full rounded-lg border border-border">
@@ -872,62 +1012,69 @@ export default function Profile() {
                       </tr>
                     </thead>
                     <tbody>
-                      {withdraws.map((withdraw) => (
-                        <tr
-                          key={withdraw.id}
-                          className="border-b border-border"
-                        >
-                          <td className="p-4 text-lg">BTC {withdraw.amount}</td>
-                          <td className="hidden md:table-cell text-lg">
-                            {format(
-                              parseISO(withdraw.created_at),
-                              "d LLLL, yyyy"
-                            )}
-                          </td>
-                          <td>
-                            <span
-                              className={`text-lg flex w-fit gap-1.5
+                      {withdraws
+                        .sort(
+                          (a, b) =>
+                            new Date(b.created_at) - new Date(a.created_at)
+                        )
+                        .map((withdraw) => (
+                          <tr
+                            key={withdraw.id}
+                            className="border-b border-border"
+                          >
+                            <td className="p-4 text-lg">
+                              BTC {withdraw.amount}
+                            </td>
+                            <td className="hidden md:table-cell text-lg">
+                              {format(
+                                parseISO(withdraw.created_at),
+                                "d LLLL, yyyy"
+                              )}
+                            </td>
+                            <td>
+                              <span
+                                className={`text-lg flex w-fit gap-1.5
                       ${
                         withdraw.status === "pending"
                           ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
                           : ""
                       } ${
-                                withdraw.status === "completed"
-                                  ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                                  : ""
-                              } ${
-                                withdraw.status === "declined"
-                                  ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
-                                  : ""
-                              }`}
-                            >
-                              {withdraw.status === "completed" ? (
-                                <Image
-                                  src="/assets/icons/check.svg"
-                                  height={20}
-                                  width={20}
-                                  alt="Completed"
-                                />
-                              ) : withdraw.status === "pending" ? (
-                                <Image
-                                  src="/assets/icons/pending.svg"
-                                  height={20}
-                                  width={20}
-                                  alt="Pending"
-                                />
-                              ) : (
-                                <Image
-                                  src="/assets/icons/xmark.svg"
-                                  height={20}
-                                  width={20}
-                                  alt="Declined"
-                                />
-                              )}
-                              {withdraw.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
+                                  withdraw.status === "completed"
+                                    ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                    : ""
+                                } ${
+                                  withdraw.status === "declined"
+                                    ? "bg-[#FFCED3] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                                    : ""
+                                }`}
+                              >
+                                {withdraw.status === "completed" ? (
+                                  <Image
+                                    src="/assets/icons/check.svg"
+                                    height={20}
+                                    width={20}
+                                    alt="Completed"
+                                  />
+                                ) : withdraw.status === "pending" ? (
+                                  <Image
+                                    src="/assets/icons/pending.svg"
+                                    height={20}
+                                    width={20}
+                                    alt="Pending"
+                                  />
+                                ) : (
+                                  <Image
+                                    src="/assets/icons/xmark.svg"
+                                    height={20}
+                                    width={20}
+                                    alt="Declined"
+                                  />
+                                )}
+                                {withdraw.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 ) : (
@@ -938,9 +1085,20 @@ export default function Profile() {
               </div>
               {/* trade table */}
               <div className="flex flex-col gap-[10px] col-span-2">
-                <h3 className="font-medium tracking-tighter text-4xl">
-                  Trades
-                </h3>
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium tracking-tighter text-4xl">
+                    Trades
+                  </h3>
+                  <button className="flex gap-4 items-center bg-darkBlack w-full lg:w-fit justify-center rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70">
+                    New trade
+                    <Image
+                      src="/assets/icons/plus-light.svg"
+                      height={16}
+                      width={16}
+                      alt="Trade"
+                    />
+                  </button>
+                </div>
                 <table className="table-auto w-full rounded-lg border border-border">
                   <thead className="text-left">
                     <tr className="bg-lightlightGray">
@@ -989,6 +1147,213 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      {/* Deposit Modal */}
+      <Transition appear show={isDepositModalOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeDepositModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <div className="flex justify-between items-center bg-lightlightGray p-4 rounded-2xl">
+                    <p className="text-2xl">Add new deposit</p>
+                    <div
+                      onClick={closeDepositModal}
+                      className="w-8 h-8 rounded-[10px] bg-darkBlack flex items-center justify-center cursor-pointer"
+                    >
+                      <Image
+                        src="/assets/icons/xmark-white.svg"
+                        height={32}
+                        width={32}
+                        alt="close"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-8 mt-8">
+                    <form
+                      onSubmit={createNewDeposit}
+                      className="flex flex-col gap-8"
+                    >
+                      <div className="flex flex-col gap-[10px]">
+                        <p className="text-xl font-bold text-darkBlack">
+                          Deposit amount
+                        </p>
+                        <p className="text-sm">
+                          Enter the BTC amount for deposit
+                        </p>
+                        <input
+                          className="w-full p-4 border border-border rounded-[4px]"
+                          type="number"
+                          required
+                          onChange={(e) => setAddDepositAmount(e.target.value)}
+                          placeholder="BTC amount"
+                        />
+                      </div>
+                      {/* Divider */}
+                      <div className="w-full bg-gray h-px"></div>
+                      {/* proceed withdraw */}
+                      <button className="text-darkBlack bg-primary font-medium text-xl rounded-full p-4 flex items-center justify-center gap-4 duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed ">
+                        Add deposit
+                        <Image
+                          src="/assets/icons/arrow-right.svg"
+                          height={16}
+                          width={16}
+                          alt="Arrow Right"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      {/* Withdraw Modal */}
+      <Transition appear show={isWithdrawModalOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeWithdrawModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <div className="flex justify-between items-center bg-lightlightGray p-4 rounded-2xl">
+                    <p className="text-2xl">Add new withdraw</p>
+                    <div
+                      onClick={closeWithdrawModal}
+                      className="w-8 h-8 rounded-[10px] bg-darkBlack flex items-center justify-center cursor-pointer"
+                    >
+                      <Image
+                        src="/assets/icons/xmark-white.svg"
+                        height={32}
+                        width={32}
+                        alt="close"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-8 mt-8">
+                    <form
+                      onSubmit={createNewWithdraw}
+                      className="flex flex-col gap-8"
+                    >
+                      <div className="flex flex-col gap-[10px]">
+                        <p className="text-xl font-bold text-darkBlack">
+                          Withdraw amount
+                        </p>
+                        {/* amount row */}
+                        <div className="flex flex-col gap-2">
+                          <p className="text-sm">
+                            Enter the BTC amount to withdraw
+                          </p>
+                          <div className="flex gap-[10px]">
+                            <input
+                              className="w-full p-4 border border-border rounded-[4px] appearance-none"
+                              type="number"
+                              min="0.1"
+                              max={balance}
+                              step={0.1}
+                              placeholder="BTC amount"
+                              value={addWithdrawAmount}
+                              onChange={(e) =>
+                                setAddWithdrawAmount(e.target.value)
+                              }
+                            />{" "}
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setAddWithdrawAmount(balance);
+                              }}
+                              className="bg-lightlightGray duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightlightGray disabled:cursor-not-allowed"
+                            >
+                              MAX
+                              <Image
+                                src="/assets/icons/dollar-sign-yellow.svg"
+                                height={16}
+                                width={16}
+                                alt="Dollar Icon"
+                              />
+                            </button>
+                          </div>
+                          {/* Amount error */}
+                          {/* <p className="text-red-600">Error here</p> */}
+                        </div>
+                        <div>
+                          <p className="text-sm">Enter the BTC address</p>
+                          <input
+                            className="w-full p-4 border border-border rounded-[4px]"
+                            type="text"
+                            required
+                            value={
+                              !addWithdrawAddress
+                                ? btcAddress
+                                : addWithdrawAddress
+                            }
+                            onChange={(e) =>
+                              setAddWithdrawAddress(e.target.value)
+                            }
+                            placeholder="BTC address"
+                          />
+                        </div>
+                      </div>
+                      {/* Divider */}
+                      <div className="w-full bg-gray h-px"></div>
+                      {/* proceed withdraw */}
+                      <button className="text-darkBlack bg-primary font-medium text-xl rounded-full p-4 flex items-center justify-center gap-4 duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed ">
+                        Withdraw
+                        <Image
+                          src="/assets/icons/arrow-right.svg"
+                          height={16}
+                          width={16}
+                          alt="Arrow Right"
+                        />
+                      </button>
+                    </form>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   );
 }
