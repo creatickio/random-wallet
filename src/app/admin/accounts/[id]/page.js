@@ -86,6 +86,13 @@ export default function Profile() {
         theme: "colored",
       });
       setIsWithdrawModalOpen(false);
+      // Update balance on success withdraw
+      const newBalance = balance - addWithdrawAmount;
+      const updates = {
+        id: router.id,
+        balance: newBalance,
+      };
+      const { error: error3 } = await supabase.from("profile").upsert(updates);
     }
   }
 
