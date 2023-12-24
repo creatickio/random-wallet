@@ -227,6 +227,16 @@ export default function Profile() {
     }
   }
 
+  let [isDeleteModalOpen, setIsDeleteModalOpen] = useState(true);
+
+  function closeDeleteModal() {
+    setIsDeleteModalOpen(false);
+  }
+
+  function openDeleteModal() {
+    setIsDeleteModalOpen(true);
+  }
+
   useEffect(() => {
     async function fetchData() {
       const supabase = createClientComponentClient();
@@ -788,19 +798,22 @@ export default function Profile() {
               <div className="w-full h-px bg-[#F0F0F0]"></div>
               {/* Action buttons */}
               <div className="flex justify-between">
+                {/* TODO: Add the functionality to delete the profile */}
                 <button
                   className="bg-darkBlack text-white py-4 px-6  flex items-center justify-center rounded-full duration-300 transition-all hover:bg-darkGray"
                   disabled={loading}
+                  onClick={openDeleteModal}
                 >
                   {loading ? "Loading ..." : "Delete profile"}
                 </button>
                 <div className="flex gap-4">
-                  <button
+                  {/* Disable user has been depricated because there's no option in supabase */}
+                  {/* <button
                     className="bg-gray py-4 px-6  flex items-center justify-center rounded-full duration-300 transition-all hover:bg-lightGray"
                     disabled={loading}
                   >
                     {loading ? "Loading ..." : "Disable user"}
-                  </button>
+                  </button> */}
                   <button
                     className="bg-primary py-4 px-6 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow"
                     type="submit"
@@ -1579,6 +1592,57 @@ export default function Profile() {
                         />
                       </button>
                     </form>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      {/* Delete a user Modal */}
+      <Transition appear show={isDeleteModalOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeDeleteModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-3xl flex flex-col gap-8 transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <div className="flex justify-center items-center bg-lightlightGray p-4 rounded-2xl text-center">
+                    <p className="text-2xl text-center">
+                      Are you sure you want to delete this account?
+                    </p>
+                  </div>
+                  {/* Divider */}
+                  <div className="w-full bg-gray h-px"></div>
+                  <div className="flex items-center gap-4 justify-center">
+                    {/* don't delete account */}
+                    <button className="text-darkBlack bg-gray font-medium text-xl rounded-full p-4 flex items-center justify-center gap-1 duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed ">
+                      <span className="font-bold">NO</span> - Close this window
+                    </button>
+                    {/* delete account */}
+                    <button className="text-darkBlack bg-primary font-medium text-xl rounded-full p-4 flex items-center justify-center gap-1 duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed ">
+                      <span className="font-bold">YES</span> - Delete Account
+                    </button>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

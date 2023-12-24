@@ -6,14 +6,7 @@ export default function ConvertedPrice() {
   const [balance, setBalance] = useState(null);
   const [currency, setCurrency] = useState(null);
   const [btcPrice, setBtcPrice] = useState(null);
-  //   console.log(balance);
-  //   console.log(currency);
-  console.log(btcPrice);
 
-  /* TODO:  1. Fetch the crypto price
-            2. Wait for the crypto data and covert to json
-            3. Set the btcPrice to $btcPrice
-  */
   async function cryptoFetch() {
     const cryptoData = await fetch(
       `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`

@@ -44,7 +44,6 @@ export default async function Dashboard() {
   const cryptoData = await cryptoFetch.json();
   const btcPrice = cryptoData.bitcoin;
 
-  ("use server");
   function getCovertedPrice() {
     if (selectedCurrency === "EUR") {
       return (
@@ -100,8 +99,6 @@ export default async function Dashboard() {
             </p>
             <div className="text-darkBlack text-4xl font-medium tracking-tighter">
               {cryptoData.bitcoin && getCovertedPrice()}
-              {/* TODO: Convert the price component */}
-              {/* <ConvertedPrice /> */}
             </div>
           </div>
           {/* Balance in BTC */}
