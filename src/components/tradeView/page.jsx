@@ -1,15 +1,34 @@
 "use client";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 function TradeViewComp() {
   let [isOpen, setIsOpen] = useState(false);
+  let [trade, setTrade] = useState([]);
+  console.log("Trade:", trade);
 
+  const router = useParams();
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await supabase
+        .from("trade")
+        .select("*")
+        .eq("id", router.id);
+      setTrade(data);
+    }
+    fetchData();
+  }, [supabase, router.id]);
+
+  //   Close Modal Function
   function closeModal() {
     setIsOpen(false);
   }
-
+  // Open Modal Function
   function openModal() {
     setIsOpen(true);
   }
@@ -22,11 +41,11 @@ function TradeViewComp() {
           <div className="flex gap-[10px]">
             <input
               className="w-full p-4 border border-border rounded-[4px] appearance-none disabled:bg-darkBlack/20 disabled:border-[#BBBBBB]"
-              type="number"
+              type="text"
               min="0.1"
               step={0.1}
               disabled={true}
-              value="100"
+              value={`${trade[0].amount} BTC`}
             />{" "}
             <button
               disabled
