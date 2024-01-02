@@ -110,7 +110,13 @@ export default async function Trade() {
                         className="block"
                       >
                         {" "}
-                        {trade.trade_option}
+                        {trade.trade_option === "ai" ? (
+                          <span className="uppercase">
+                            {trade.trade_option}
+                          </span>
+                        ) : (
+                          trade.trade_option
+                        )}
                       </Link>
                     </td>
                     <td className="w-[120px]">
