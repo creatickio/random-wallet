@@ -344,7 +344,7 @@ export default async function Dashboard() {
                           BTC {trade.amount}
                         </Link>
                       </td>
-                      <td className="text-lg capitalize">
+                      <td className="hidden md:table-cell text-lg capitalize">
                         <Link
                           href={`/dashboard/trade/${trade.id}`}
                           className="block"
