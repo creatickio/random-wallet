@@ -17,6 +17,15 @@ function AdminPage() {
   const [peoples, setPeoples] = useState([]);
   const [filteredUserLogs, setFilteredUserLogs] = useState([]);
 
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const pageCount = Math.ceil(userLogs.length / rowsPerPage);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   // console.log("Search Results:", searchResults);
   console.log("Filtered User Logs:", filteredUserLogs);
 
@@ -128,11 +137,15 @@ function AdminPage() {
                         event.target.value;
                       }}
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-                      <button className="py-3 px-4 rounded-full bg-[#D8D8D8] text-darkGray absolute right-6 duration-300 transition-all hover:bg-gray">
+
+                    <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                      <p
+                        aria-hidden="true"
+                        className="py-3 px-4 rounded-full bg-[#D8D8D8] text-darkGray absolute right-6 duration-300 transition-all hover:bg-gray"
+                      >
                         Select
-                      </button>
-                    </div>
+                      </p>
+                    </Combobox.Button>
                   </div>
                   <Transition
                     as={Fragment}
@@ -224,6 +237,10 @@ function AdminPage() {
             </thead>
             <tbody>
               {filteredUserLogs
+                .slice(
+                  (currentPage - 1) * rowsPerPage,
+                  currentPage * rowsPerPage
+                )
                 .sort((a, b) => new Date(b.last_login) - new Date(a.last_login))
                 .map((person) => (
                   <tr key={person.id} className="border-b border-border">
@@ -243,6 +260,22 @@ function AdminPage() {
                 ))}
             </tbody>
           </table>
+          <div className="flex justify-between items-center mt-4">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="bg-primary duration-300 transition-all rounded-[4px] hover:bg-yellow px-4 py-2 disabled:bg-lightlightGray disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <button
+              disabled={currentPage === pageCount}
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="bg-primary duration-300 transition-all rounded-[4px] hover:bg-yellow px-4 py-2 disabled:bg-lightlightGray disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>

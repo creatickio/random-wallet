@@ -20,6 +20,12 @@ export default async function Trade() {
     redirect("/signin");
   }
 
+  const { data: trades } = await supabase
+    .from("trade")
+    .select("*")
+    .eq("profile", session.user.id);
+  console.log(trades);
+
   const user = data[0];
   return (
     <div>
@@ -86,11 +92,64 @@ export default async function Trade() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-border">
-                <td className="p-4 text-lg">test</td>
-                <td className="text-lg">test</td>
-                <td className="text-lg">test</td>
-              </tr>
+              {trades
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .map((trade) => (
+                  <tr key={trade.id} className="border-b border-border">
+                    <td className="p-4 text-lg">
+                      <Link
+                        href={`/dashboard/trade/${trade.id}`}
+                        className="block"
+                      >
+                        BTC {trade.amount}
+                      </Link>
+                    </td>
+                    <td className="text-lg capitalize">
+                      <Link
+                        href={`/dashboard/trade/${trade.id}`}
+                        className="block"
+                      >
+                        {" "}
+                        {trade.trade_option}
+                      </Link>
+                    </td>
+                    <td className="w-[120px]">
+                      <Link href={`/dashboard/trade/${trade.id}`}>
+                        <span
+                          className={`text-lg flex w-fit gap-1.5
+                      ${
+                        trade.trade_status === "close"
+                          ? "bg-[#E7E9E5] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                          : ""
+                      } ${
+                            trade.trade_status === "open"
+                              ? "bg-[#D3FFCE] px-4 py-1 rounded-lg text-darkBlack capitalize"
+                              : ""
+                          }`}
+                        >
+                          {trade.trade_status === "open" ? (
+                            <Image
+                              src="/assets/icons/check.svg"
+                              height={20}
+                              width={20}
+                              alt="Completed"
+                            />
+                          ) : trade.trade_status === "close" ? (
+                            <Image
+                              src="/assets/icons/pending.svg"
+                              height={20}
+                              width={20}
+                              alt="Pending"
+                            />
+                          ) : (
+                            ""
+                          )}
+                          {trade.trade_status}
+                        </span>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

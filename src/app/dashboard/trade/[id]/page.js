@@ -1,3 +1,4 @@
+import React from "react";
 import DashboardNav from "@/components/dashboard/nav/page";
 import StandardTradeComp from "@/components/standardTrade/page";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -5,9 +6,9 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import React from "react";
+import TradeViewComp from "@/components/tradeView/page";
 
-export default async function StandardTrade() {
+export default async function TradeView() {
   const supabase = createServerComponentClient({ cookies });
   const {
     data: { session },
@@ -26,45 +27,10 @@ export default async function StandardTrade() {
     <div className="flex flex-col gap-2 p-2">
       <DashboardNav firstName={user.first_name} lastName={user.last_name} />
       <div className="px-4 md:px-8">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-center py-8">
-          <Link
-            href="/dashboard/trade/newtrade/standard"
-            className="bg-primary flex flex-col gap-0 p-8 rounded-2xl w-full text-center md:text-left md:w-fit cursor-pointer duration-300 transition-all"
-          >
-            <h2 className="text-darkBlack font-medium tracking-tighter text-3xl lg:text-4xl">
-              Standard Trade
-            </h2>
-            <p className="font-light text-text text-base lg:text-xl">
-              Get started to the trading world
-            </p>
-          </Link>
-          <Link
-            href="/dashboard/trade/newtrade/ai"
-            className="bg-lightlightGray flex flex-col gap-0 p-8 rounded-2xl w-full text-center md:text-left md:w-fit cursor-pointer duration-300 transition-all hover:bg-lightGray"
-          >
-            <h2 className="text-darkBlack font-medium tracking-tighter text-3xl lg:text-4xl">
-              AI Trade
-            </h2>
-            <p className="font-light text-text text-base lg:text-xl">
-              Let the Artificial Intelligence do your trades
-            </p>
-          </Link>
-          <Link
-            href="/dashboard/trade/newtrade/leverage"
-            className="bg-lightlightGray flex flex-col gap-0 p-8 rounded-2xl w-full text-center md:text-left md:w-fit cursor-pointer duration-300 transition-all hover:bg-lightGray"
-          >
-            <h2 className="text-darkBlack font-medium tracking-tighter text-3xl lg:text-4xl">
-              Leverage Trade
-            </h2>
-            <p className="font-light text-text text-base lg:text-xl">
-              Maximum earnings using this option
-            </p>
-          </Link>
-        </div>
         {/* Content */}
         <div className="max-w-[1172px] mx-auto flex flex-col gap-16">
           <h2 className="text-[64px] font-medium tracking-tighter text-darkBlack">
-            Start a new{" "}
+            View the{" "}
             <span className="font-bold border-b-4 border-primary">
               Standard
             </span>{" "}
@@ -72,7 +38,7 @@ export default async function StandardTrade() {
           </h2>
           <div className="flex flex-row justify-between gap-11">
             {/* Trade Form */}
-            <StandardTradeComp />
+            <TradeViewComp />
             {/* Right */}
             {/* tips row */}
             <div className="flex flex-col gap-2 w-4/12 shrink-0">
