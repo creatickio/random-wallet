@@ -1,3 +1,4 @@
+import AiTradeComp from "@/components/aiTrade/page";
 import DashboardNav from "@/components/dashboard/nav/page";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -70,35 +71,7 @@ export default async function AiTrade() {
           </h2>
           <div className="flex flex-row justify-between gap-11">
             {/* Trade Form */}
-            <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-col gap-8">
-              {/* amount row */}
-              <div className="flex flex-col gap-2">
-                <p className="text-lg">Amount:</p>
-                <div className="flex gap-[10px]">
-                  <input
-                    className="w-full p-4 border border-border rounded-[4px] appearance-none"
-                    type="number"
-                    min="0.1"
-                    step={0.1}
-                  />{" "}
-                  <button className="bg-[#BBBBBB] duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightlightGray disabled:cursor-not-allowed">
-                    MAX
-                    <Image
-                      src="/assets/icons/dollar-sign-yellow.svg"
-                      height={16}
-                      width={16}
-                      alt="Dollar Icon"
-                    />
-                  </button>
-                </div>
-              </div>
-              <button
-                className="bg-primary p-4 mt-2 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow"
-                type="submit"
-              >
-                Start the trade
-              </button>
-            </div>
+            <AiTradeComp />
             {/* Right */}
             {/* tips row */}
             <div className="flex flex-col gap-2 w-4/12 shrink-0">

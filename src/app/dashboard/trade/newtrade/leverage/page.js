@@ -1,5 +1,6 @@
 "use client";
 import DashboardNav from "@/components/dashboard/nav/page";
+import LeverageTradeComp from "@/components/leverageTrade/page";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,71 +60,7 @@ export default function LeverageTrade() {
           </h2>
           <div className="flex flex-row justify-between gap-11">
             {/* Trade Form */}
-            <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-col gap-8">
-              {/* amount row */}
-              <div className="flex flex-col gap-2">
-                <p className="text-lg">Amount:</p>
-                <div className="flex gap-[10px]">
-                  <input
-                    className="w-full p-4 border border-border rounded-[4px] appearance-none"
-                    type="number"
-                    min="0.1"
-                    step={0.1}
-                  />{" "}
-                  <button className="bg-[#BBBBBB] duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightlightGray disabled:cursor-not-allowed">
-                    MAX
-                    <Image
-                      src="/assets/icons/dollar-sign-yellow.svg"
-                      height={16}
-                      width={16}
-                      alt="Dollar Icon"
-                    />
-                  </button>
-                </div>
-              </div>
-              {/* amount to earn row */}
-              <div className="flex flex-col gap-2">
-                <p className="text-lg">Set the amount to earn:</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-1 w-full rounded-[4px] border border-border p-1">
-                  <div
-                    onClick={() => setNetwork("x2")}
-                    className={
-                      network === "x2"
-                        ? "w-full text-center border border-border duration-300 transition-all bg-white rounded-[4px] py-3 font-semibold cursor-pointer"
-                        : "w-full text-center border border-border duration-300 transition-all bg-border rounded-[4px] py-3 font-semibold cursor-pointer"
-                    }
-                  >
-                    x2
-                  </div>
-                  <div
-                    onClick={() => setNetwork("x5")}
-                    className={
-                      network === "x5"
-                        ? "w-full text-center border border-border duration-300 transition-all bg-white rounded-[4px] py-3 font-semibold cursor-pointer"
-                        : "w-full text-center border border-border duration-300 transition-all bg-border rounded-[4px] py-3 font-semibold cursor-pointer"
-                    }
-                  >
-                    x5
-                  </div>
-                  <div
-                    onClick={() => setNetwork("x10")}
-                    className={
-                      network === "x10"
-                        ? "w-full text-center border border-border duration-300 transition-all bg-white rounded-[4px] py-3 font-semibold cursor-pointer"
-                        : "w-full text-center border border-border duration-300 transition-all bg-border rounded-[4px] py-3 font-semibold cursor-pointer"
-                    }
-                  >
-                    x10
-                  </div>
-                </div>
-              </div>
-              <button
-                className="bg-primary p-4 mt-2 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow"
-                type="submit"
-              >
-                Start the trade
-              </button>
-            </div>
+            <LeverageTradeComp />
             {/* Right */}
             {/* tips row */}
             <div className="flex flex-col gap-2 w-4/12 shrink-0">

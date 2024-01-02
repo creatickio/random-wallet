@@ -1,10 +1,7 @@
 import React from "react";
 import DashboardNav from "@/components/dashboard/nav/page";
-import StandardTradeComp from "@/components/standardTrade/page";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import TradeViewComp from "@/components/tradeView/page";
 
