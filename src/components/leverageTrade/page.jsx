@@ -81,7 +81,7 @@ function LeverageTradeComp() {
         {/* amount to earn row */}
         <div className="flex flex-col gap-2">
           <p className="text-lg">Set the amount to earn:</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-1 w-full rounded-[4px] border border-border p-1">
+          <div className="grid grid-cols-3 gap-1 w-full rounded-[4px] border border-border p-1">
             <div
               onClick={() => setNetwork("x2")}
               className={

@@ -33,8 +33,8 @@ export default async function Trade() {
         <DashboardNav firstName={user.first_name} lastName={user.last_name} />
         <div className="w-full px-4 md:px-6 lg:px-8">
           {/* head */}
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-2 py-8">
+          <div className="flex flex-col lg:flex-row w-full justify-between items-center pb-6 lg:pb-0">
+            <div className="flex flex-col gap-2 py-6 lg:py-8 w-full">
               <h2 className="font-medium text-4xl text-darkBlack tracking-tighter">
                 Trade
               </h2>
@@ -43,7 +43,7 @@ export default async function Trade() {
               </p>
             </div>
             {/* right side */}
-            <div className="flex flex-col md:flex-row gap-4 w-full lg:w-fit">
+            <div className="flex flex-col md:flex-row shrink-0 gap-4 w-full lg:w-fit">
               <Link
                 href="/dashboard/deposit"
                 className="flex gap-4 items-center bg-primary rounded-full py-6 justify-center px-8 w-full lg:w-fit text-darkBlack font-medium text-xl duration-300 transition-all hover:bg-yellow"

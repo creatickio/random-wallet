@@ -45,8 +45,8 @@ function TradeViewComp() {
     setIsOpen(true);
   }
   return (
-    <div className="max-w-[1172px] mx-auto flex flex-col gap-16 pt-8">
-      <h2 className="text-[64px] font-medium tracking-tighter text-darkBlack">
+    <div className="max-w-[1172px] mx-auto flex flex-col gap-8 md:gap-16 pt-8">
+      <h2 className="text-[32px] md:text-[64px] text-center md:text-left font-medium tracking-tighter text-darkBlack">
         View the{" "}
         <span className="font-bold border-b-4 border-primary capitalize">
           {tradeOption === "ai" ? (
@@ -57,7 +57,7 @@ function TradeViewComp() {
         </span>{" "}
         trade
       </h2>
-      <div className="flex flex-row justify-between gap-11">
+      <div className="flex flex-col md:flex-row justify-between gap-11">
         <div className="flex gap-[10px] flex-col w-full h-fit">
           <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-col gap-8">
             {/* amount row */}
@@ -91,7 +91,7 @@ function TradeViewComp() {
             {tradeOption === "leverage" ? (
               <div className="flex flex-col gap-2">
                 <p className="text-lg">Set the amount to earn:</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-1 w-full rounded-[4px] border border-border p-1">
+                <div className="grid grid-cols-3 gap-1 w-full rounded-[4px] border border-border p-1">
                   <div
                     className={
                       leverageOptions === "x2"
@@ -182,7 +182,7 @@ function TradeViewComp() {
           </Transition>
         </div>
         {/* tips row */}
-        <div className="flex flex-col gap-2 w-4/12 shrink-0">
+        <div className="flex flex-col gap-2 w-full md:w-4/12 shrink-0">
           <p className="text-lg">Tips:</p>
           <ul className="bg-[#F4F4F4] p-8 flex flex-col gap-8 rounded-2xl text-lg">
             <li className="flex gap-[10px]">

@@ -64,17 +64,17 @@ export default async function AiTrade() {
         {/* Content */}
         {/* Content */}
         <div className="max-w-[1172px] mx-auto flex flex-col gap-16">
-          <h2 className="text-[64px] font-medium tracking-tighter text-darkBlack">
+          <h2 className="text-[32px] text-center md:text-left md:text-[64px] font-medium tracking-tighter text-darkBlack">
             Start a new{" "}
             <span className="font-bold border-b-4 border-primary">AI</span>{" "}
             trade
           </h2>
-          <div className="flex flex-row justify-between gap-11">
+          <div className="flex flex-col md:flex-row justify-between gap-11">
             {/* Trade Form */}
             <AiTradeComp />
             {/* Right */}
             {/* tips row */}
-            <div className="flex flex-col gap-2 w-4/12 shrink-0">
+            <div className="flex flex-col gap-2 w-full md:w-4/12 shrink-0">
               <p className="text-lg">Tips:</p>
               <ul className="bg-[#F4F4F4] p-8 flex flex-col gap-8 rounded-2xl text-lg">
                 <li className="flex gap-[10px]">
