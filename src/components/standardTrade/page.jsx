@@ -10,7 +10,6 @@ function StandardTradeComp() {
   const [balance, setBalance] = useState();
   const [amountError, setAmountError] = useState("");
   const [isTradeEnabled, setIsTradeEnabled] = useState();
-  console.log("Is Trade Enabled:", isTradeEnabled);
 
   const supabase = createClientComponentClient();
 
@@ -121,7 +120,7 @@ function StandardTradeComp() {
             ? amountError && <p className="text-red-600">{amountError}</p>
             : ""}
         </div>
-        {/* proceed withdraw */}
+        {/* start a new trade button */}
         {isTradeEnabled ? (
           <button
             className="bg-primary p-4 mt-2 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-lightGray disabled:cursor-not-allowed"
