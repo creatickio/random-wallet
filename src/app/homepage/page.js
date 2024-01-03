@@ -1,7 +1,6 @@
 import React from "react";
 import Nav from "@/components/nav/page";
 import Link from "next/link";
-// import { supabase } from "../supabaseClient";
 import Image from "next/image";
 import Nossr from "@/components/crypto/nossr";
 import Ticker from "@/components/crypto/ticker";
