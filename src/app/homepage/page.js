@@ -17,7 +17,6 @@ export default async function Homepage() {
   const supabase = createClientComponentClient();
   let { data: settings, error } = await supabase.from("settings").select("*");
 
-  console.log(settings[0]);
   return (
     <div className="flex flex-col gap-2 p-2 scroll-smooth">
       <Nav />

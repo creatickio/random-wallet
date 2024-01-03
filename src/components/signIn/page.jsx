@@ -9,6 +9,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userIP, setUserIP] = useState("");
+  const [loading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -41,6 +42,7 @@ function SignIn() {
       email: email,
       password: password,
     });
+    setIsLoading(true);
     if (error) {
       console.log("Error signing in:", error.message);
     } else {
@@ -112,7 +114,7 @@ function SignIn() {
             onClick={handleSignIn}
             className="bg-[#202020] rounded-full text-lg font-medium text-white w-full p-4 hover:opacity-90 transition"
           >
-            Sign in
+            {loading ? "Loading..." : "Sign In"}
           </button>
         </form>
         {/* Already have an account - Login */}
