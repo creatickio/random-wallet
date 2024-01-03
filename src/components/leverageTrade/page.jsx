@@ -6,9 +6,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function LeverageTradeComp() {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
   const [network, setNetwork] = useState("x2");
   const [balance, setBalance] = useState();
+  const [amountError, setAmountError] = useState("");
+  const [isTradeEnabled, setIsTradeEnabled] = useState();
 
   const supabase = createClientComponentClient();
 
@@ -24,6 +26,7 @@ function LeverageTradeComp() {
         .eq("id", session.user.id)
         .single();
       setBalance(user.balance);
+      setIsTradeEnabled(user.tradeEnabled);
     }
     fetchData();
   }, [supabase]);
@@ -70,6 +73,14 @@ function LeverageTradeComp() {
     }
   }
 
+  useEffect(() => {
+    if (amount < 0.1 || amount > balance || amount === "") {
+      setAmountError(`Please write an amount between 0,1 and ${balance} BTC`);
+    } else {
+      setAmountError("");
+    }
+  }, [amount, balance]);
+
   return (
     <div className="w-full h-fit">
       <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-col gap-8">
@@ -78,17 +89,19 @@ function LeverageTradeComp() {
           <p className="text-lg">Amount:</p>
           <div className="flex gap-[10px]">
             <input
-              className="w-full p-4 border border-border rounded-[4px] appearance-none"
+              className="w-full p-4 border border-border rounded-[4px] appearance-none disabled:bg-lightGray disabled:border-lightGray"
               type="number"
               min="0.1"
               max={balance}
               step={0.1}
               value={amount}
+              disabled={!isTradeEnabled}
               onChange={(event) => setAmount(event.target.value)}
             />{" "}
             <button
               onClick={() => setAmount(balance)}
-              className="bg-[#BBBBBB] duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightlightGray disabled:cursor-not-allowed"
+              disabled={!isTradeEnabled}
+              className="bg-[#BBBBBB] duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightGray disabled:cursor-not-allowed"
             >
               MAX
               <Image
@@ -99,6 +112,10 @@ function LeverageTradeComp() {
               />
             </button>
           </div>
+          {/* Amount error */}
+          {isTradeEnabled
+            ? amountError && <p className="text-red-600">{amountError}</p>
+            : ""}
         </div>
         {/* amount to earn row */}
         <div className="flex flex-col gap-2">
@@ -136,14 +153,22 @@ function LeverageTradeComp() {
             </div>
           </div>
         </div>
-        <button
-          className="bg-primary p-4 mt-2 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-lightGray disabled:cursor-not-allowed"
-          type="submit"
-          onClick={createLeverageTrade}
-          disabled={amount === 0}
-        >
-          Start the trade
-        </button>
+        {/* start a new trade button */}
+        {isTradeEnabled ? (
+          <button
+            className="bg-primary p-4 mt-2 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-lightGray disabled:cursor-not-allowed"
+            type="submit"
+            onClick={createLeverageTrade}
+            disabled={amountError || !isTradeEnabled}
+          >
+            Start the trade
+          </button>
+        ) : (
+          <div className="p-6 rounded-2xl bg-red-300">
+            You are not allowed to trade just yet. Please contact our support to
+            enable trading!
+          </div>
+        )}
       </div>
       <ToastContainer />
     </div>
