@@ -1,20 +1,43 @@
 "use client";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function StandardTradeComp() {
   const [amount, setAmount] = useState(0);
+  const [balance, setBalance] = useState();
+
+  const supabase = createClientComponentClient();
+
+  // fetch user's balance
+  useEffect(() => {
+    async function fetchData() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const { data: user } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+      setBalance(user.balance);
+    }
+    fetchData();
+  }, [supabase]);
 
   //   Create Standard Trade
   async function createStandardTrade(event) {
     event.preventDefault();
-    const supabase = createClientComponentClient();
     const {
       data: { session },
     } = await supabase.auth.getSession();
+    const { data: user } = await supabase
+      .from("profile")
+      .select("*")
+      .eq("id", session.user.id);
+    setBalance(user.balance);
 
     const updates = {
       profile: session.user.id,
@@ -61,11 +84,15 @@ function StandardTradeComp() {
               className="w-full p-4 border border-border rounded-[4px] appearance-none"
               type="number"
               min="0.1"
+              max={balance}
               step={0.1}
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
             />{" "}
-            <button className="bg-[#BBBBBB] duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightlightGray disabled:cursor-not-allowed">
+            <button
+              onClick={() => setAmount(balance)}
+              className="bg-[#BBBBBB] duration-300 transition-all rounded-[4px] items-center justify-center font-bold hover:bg-lightGray px-8 py-4 flex gap-[10px] disabled:bg-lightlightGray disabled:cursor-not-allowed"
+            >
               MAX
               <Image
                 src="/assets/icons/dollar-sign-yellow.svg"
