@@ -81,7 +81,7 @@ function CreateStandardTrade() {
 
   return (
     <div>
-      <div className=" text-darkBlack">
+      <div className="mb-[10px] text-darkBlack">
         <p className="text-xl font-bold">BTC amount</p>
         <p className="text-sm">
           Add the BTC amount you want to start the trade with
