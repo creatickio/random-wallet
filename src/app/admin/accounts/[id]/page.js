@@ -476,8 +476,8 @@ export default function Profile() {
     }
   }
 
-  // trade functionalit
-  let [isTradeModalOpen, setIsTradeModalOpen] = useState(true);
+  // trade functionality
+  let [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
 
   function closeTradeModal() {
     setIsTradeModalOpen(false);
