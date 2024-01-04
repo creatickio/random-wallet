@@ -1,7 +1,7 @@
 "use client";
 import AdminNav from "@/components/admin/nav/page";
 import { usePathname, useParams } from "next/navigation";
-import { Dialog, Switch, Menu, Transition } from "@headlessui/react";
+import { Dialog, Switch, Menu, Transition, Tab } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -10,6 +10,9 @@ import { parseISO, format, set } from "date-fns";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import CreateStandardTrade from "@/components/admin/trade/createStandardTrade/page";
+import CreateLeverageTrade from "@/components/admin/trade/createLeverageTrade/page";
+import CreateAITrade from "@/components/admin/trade/createAITrade/page";
 
 export default function Profile() {
   // fetch the id
@@ -471,6 +474,17 @@ export default function Profile() {
         </div>
       );
     }
+  }
+
+  // trade functionality
+  let [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
+
+  function closeTradeModal() {
+    setIsTradeModalOpen(false);
+  }
+
+  function openTradeModal() {
+    setIsTradeModalOpen(true);
   }
 
   return (
@@ -1343,7 +1357,10 @@ export default function Profile() {
                   <h3 className="font-medium tracking-tighter text-4xl">
                     Trades
                   </h3>
-                  <button className="flex gap-4 items-center bg-darkBlack w-full lg:w-fit justify-center rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70">
+                  <button
+                    onClick={() => setIsTradeModalOpen(true)}
+                    className="flex gap-4 items-center bg-darkBlack w-full lg:w-fit justify-center rounded-full py-6 px-8 text-white font-medium text-xl duration-300 transition-all hover:opacity-70"
+                  >
                     New trade
                     <Image
                       src="/assets/icons/plus-light.svg"
@@ -1710,6 +1727,116 @@ export default function Profile() {
                       <span className="font-bold">YES</span> - Delete Account
                     </button>
                   </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
+      {/* Trade Modal */}
+      <Transition appear show={isTradeModalOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeTradeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-3xl flex flex-col gap-8 transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <div className="flex justify-between items-center bg-lightlightGray p-4 rounded-2xl">
+                    <p className="text-2xl text-center">Add new trade</p>
+                    <div
+                      onClick={closeTradeModal}
+                      className="w-8 h-8 rounded-[10px] bg-darkBlack flex items-center justify-center cursor-pointer"
+                    >
+                      <Image
+                        src="/assets/icons/xmark-white.svg"
+                        height={32}
+                        width={32}
+                        alt="close"
+                      />
+                    </div>
+                  </div>
+                  {/* Divider */}
+                  <div className="w-full bg-gray h-px"></div>
+                  <div className="-mb-6 text-darkBlack">
+                    <p className="text-xl font-bold">Choose trading option</p>
+                    <p className="text-sm">
+                      Select one trading option to do the trade
+                    </p>
+                  </div>
+                  <Tab.Group>
+                    <Tab.List className="grid grid-cols-3 gap-4">
+                      <Tab as={Fragment}>
+                        {({ selected }) => (
+                          <button
+                            className={
+                              selected
+                                ? "bg-primary text-darkBlack py-6 rounded font-bold text-2xl focus-visible:outline-none"
+                                : "bg-lightlightGray text-darkBlack py-6 rounded font-bold text-2xl focus-visible:outline-none"
+                            }
+                          >
+                            Standard
+                          </button>
+                        )}
+                      </Tab>
+                      <Tab as={Fragment}>
+                        {({ selected }) => (
+                          <button
+                            className={
+                              selected
+                                ? "bg-primary text-darkBlack py-6 rounded font-bold text-2xl focus-visible:outline-none"
+                                : "bg-lightlightGray text-darkBlack py-6 rounded font-bold text-2xl focus-visible:outline-none"
+                            }
+                          >
+                            AI
+                          </button>
+                        )}
+                      </Tab>
+                      <Tab as={Fragment}>
+                        {({ selected }) => (
+                          <button
+                            className={
+                              selected
+                                ? "bg-primary text-darkBlack py-6 rounded font-bold text-2xl focus-visible:outline-none"
+                                : "bg-lightlightGray text-darkBlack py-6 rounded font-bold text-2xl focus-visible:outline-none"
+                            }
+                          >
+                            Leverage
+                          </button>
+                        )}
+                      </Tab>
+                    </Tab.List>
+                    <Tab.Panels>
+                      <Tab.Panel>
+                        <CreateStandardTrade />
+                      </Tab.Panel>
+                      <Tab.Panel>
+                        <CreateAITrade />
+                      </Tab.Panel>
+                      <Tab.Panel>
+                        <CreateLeverageTrade />
+                      </Tab.Panel>
+                    </Tab.Panels>
+                  </Tab.Group>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
