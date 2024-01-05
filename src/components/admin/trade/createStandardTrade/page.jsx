@@ -1,16 +1,13 @@
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function CreateStandardTrade() {
+function CreateStandardTrade({ onSuccess }) {
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState();
   const [amountError, setAmountError] = useState("");
-
-  console.log("Balance:", balance);
 
   const supabase = createClientComponentClient();
   const router = useParams();
@@ -68,6 +65,16 @@ function CreateStandardTrade() {
         progress: undefined,
         theme: "colored",
       });
+      const newBalance = balance - amount;
+      const balanceUpdate = {
+        id: router.id,
+        balance: newBalance,
+      };
+      const { error: error3 } = await supabase
+        .from("profile")
+        .upsert(balanceUpdate);
+      setBalance(newBalance);
+      onSuccess();
     }
   }
 
