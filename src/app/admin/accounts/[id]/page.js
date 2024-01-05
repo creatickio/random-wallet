@@ -1859,7 +1859,11 @@ export default function Profile() {
                         />
                       </Tab.Panel>
                       <Tab.Panel>
-                        <CreateLeverageTrade />
+                        <CreateLeverageTrade
+                          onSuccess={() => {
+                            closeTradeModal(), updateBalanceAndTrades();
+                          }}
+                        />
                       </Tab.Panel>
                     </Tab.Panels>
                   </Tab.Group>
