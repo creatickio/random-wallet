@@ -1852,7 +1852,11 @@ export default function Profile() {
                         />
                       </Tab.Panel>
                       <Tab.Panel>
-                        <CreateAITrade />
+                        <CreateAITrade
+                          onSuccess={() => {
+                            closeTradeModal(), updateBalanceAndTrades();
+                          }}
+                        />
                       </Tab.Panel>
                       <Tab.Panel>
                         <CreateLeverageTrade />
