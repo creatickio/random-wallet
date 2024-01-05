@@ -487,6 +487,24 @@ export default function Profile() {
     setIsTradeModalOpen(true);
   }
 
+  // update balance and trades list
+  async function updateBalanceAndTrades() {
+    const supabase = createClientComponentClient();
+    const { data: trades } = await supabase
+      .from("trade")
+      .select("*")
+      .eq("profile", router.id);
+
+    const { data: profile } = await supabase
+      .from("profile")
+      .select("*")
+      .eq("id", router.id)
+      .single();
+
+    setTrades(trades);
+    setBalance(profile.balance);
+  }
+
   return (
     <div className="flex flex-col gap-2 p-2">
       <AdminNav />
@@ -1827,13 +1845,25 @@ export default function Profile() {
                     </Tab.List>
                     <Tab.Panels>
                       <Tab.Panel>
-                        <CreateStandardTrade />
+                        <CreateStandardTrade
+                          onSuccess={() => {
+                            closeTradeModal(), updateBalanceAndTrades();
+                          }}
+                        />
                       </Tab.Panel>
                       <Tab.Panel>
-                        <CreateAITrade />
+                        <CreateAITrade
+                          onSuccess={() => {
+                            closeTradeModal(), updateBalanceAndTrades();
+                          }}
+                        />
                       </Tab.Panel>
                       <Tab.Panel>
-                        <CreateLeverageTrade />
+                        <CreateLeverageTrade
+                          onSuccess={() => {
+                            closeTradeModal(), updateBalanceAndTrades();
+                          }}
+                        />
                       </Tab.Panel>
                     </Tab.Panels>
                   </Tab.Group>
