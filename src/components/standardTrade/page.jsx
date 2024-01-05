@@ -82,6 +82,7 @@ function StandardTradeComp() {
         .from("profile")
         .upsert(balanceUpdate);
       setBalance(newBalance);
+      setAmount("");
     }
   }
 

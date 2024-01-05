@@ -79,6 +79,7 @@ function LeverageTradeComp() {
         .from("profile")
         .upsert(balanceUpdate);
       setBalance(newBalance);
+      setAmount("");
     }
   }
 
