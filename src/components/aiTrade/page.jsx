@@ -68,6 +68,15 @@ function AiTradeComp() {
         progress: undefined,
         theme: "colored",
       });
+      const newBalance = balance - amount;
+      const balanceUpdate = {
+        id: session.user.id,
+        balance: newBalance,
+      };
+      const { error: error3 } = await supabase
+        .from("profile")
+        .upsert(balanceUpdate);
+      setBalance(newBalance);
     }
   }
 
