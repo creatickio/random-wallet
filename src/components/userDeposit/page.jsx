@@ -10,13 +10,15 @@ function UserDeposit() {
   const [companyBtcAddress, setCompanyBtcAddress] = useState();
   const [network, setNetwork] = useState("btc");
   const [defaultBtc, setDefaultBtc] = useState(null);
+  const [userQRCode, setUserQRCode] = useState("/assets/image-placeholder.png");
+  const [adminQRCode, setAdminQRCode] = useState(
+    "/assets/image-placeholder.png"
+  );
 
   const currentBtc = useRef();
 
-  console.log("Balance", balance);
-  console.log("Network:", network);
-  console.log("Default Btc:", defaultBtc);
-  console.log("Current Btc:", currentBtc.current);
+  console.log("User QR Code: ", userQRCode);
+  console.log("Admin QR Code: ", adminQRCode);
 
   function copyToClipboard() {
     navigator.clipboard.writeText(currentBtc.current.value);
@@ -43,13 +45,14 @@ function UserDeposit() {
         .from("profile")
         .select("*")
         .eq("id", session.user.id);
-      const { data: defaultBTC } = await supabase
-        .from("settings")
-        .select("default_btc_address");
+      const { data: defaultBTC } = await supabase.from("settings").select("*");
 
       setDefaultBtc(defaultBTC[0].default_btc_address);
+
       const user = data[0];
       setBalance(user.balance);
+      setUserQRCode(user.qr_code_url);
+      setAdminQRCode(defaultBTC[0].qr_code_url);
       setCompanyBtcAddress(user.company_btc_address);
     }
     getData();
@@ -154,12 +157,30 @@ function UserDeposit() {
         </div>
         <div className="flex flex-col items-center md:flex-row gap-8 mt-8">
           {/* TODO: Fetch the QR code from database */}
-          <Image
-            src="/assets/icons/btc-qrcode.svg"
-            height={260}
-            width={260}
-            alt="Bitcoin address qr code"
-          />
+          {userQRCode || adminQRCode ? (
+            <div className="w-full flex items-center justify-center lg:w-[400px]">
+              {userQRCode ? (
+                <Image
+                  src={userQRCode}
+                  height={260}
+                  width={260}
+                  loading="lazy"
+                  alt="Bitcoin address qr code"
+                />
+              ) : (
+                <Image
+                  src={adminQRCode}
+                  height={260}
+                  width={260}
+                  loading="lazy"
+                  alt="Bitcoin address qr code"
+                />
+              )}
+            </div>
+          ) : (
+            ""
+          )}
+
           <div className="bg-[#F4F4F4] flex flex-col gap-8 items-left justify-center p-8 rounded-2xl">
             <div className="w-[50px] h-[50px] bg-darkBlack/20 rounded-full flex items-center justify-center">
               <Image
