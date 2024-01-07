@@ -40,6 +40,8 @@ export default function Profile() {
   const [deposits, setDeposits] = useState([]);
   const [withdraws, setWithdraws] = useState([]);
   const [trades, setTrades] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   // withdraw data
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
@@ -505,6 +507,117 @@ export default function Profile() {
     setBalance(profile.balance);
   }
 
+  // Handle Image Upload
+  async function handleUpload(event) {
+    try {
+      setUploading(true);
+      toast.info("Image is being uploaded ...", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+
+      if (!event.target.files || event.target.files.length === 0) {
+        toast.error("You must select a file to upload.", {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+
+      const supabase = createClientComponentClient();
+      const file = event.target.files[0];
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("images")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Fetch the current uploaded QR Code Image from Storage
+      const { data: qrcode } = supabase.storage
+        .from("images")
+        .getPublicUrl(filePath);
+      setImageUrl(qrcode.publicUrl);
+
+      // show the success message of image uploaded
+      toast.success("Image uploaded successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+
+      // Update the qr_code_url in settings table
+      const { data } = await supabase.from("profile").select();
+      const updateQRCode = {
+        id: router.id,
+        qr_code_url: qrcode.publicUrl,
+      };
+
+      const { error } = await supabase.from("profile").upsert(updateQRCode);
+    } catch (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  // Remove the BTC QR Code Image
+  async function removeImage() {
+    const supabase = createClientComponentClient();
+    const { data } = await supabase.from("profile").select();
+    const removeQRCode = {
+      id: router.id,
+      qr_code_url: "",
+    };
+
+    const { error } = await supabase.from("profile").upsert(removeQRCode);
+
+    setImageUrl("");
+
+    if (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }
+
   return (
     <div className="flex flex-col gap-2 p-2">
       <AdminNav />
@@ -724,6 +837,70 @@ export default function Profile() {
                     className="border border-slate-200 p-4 rounded-lg disabled:bg-darkBlack/20 disabled:cursor-not-allowed"
                   />
                 </div>
+              </div>
+              {/* BTC QR Code */}
+              <div className="flex flex-col w-full">
+                <label htmlFor="file">
+                  Company assigned BTC QR Code to this user
+                </label>
+                {!imageUrl ? (
+                  <>
+                    <div class="flex items-center justify-center w-full">
+                      <label
+                        for="file"
+                        class="flex flex-col items-center justify-center w-full h-40 bg-[#ECECEC] text-sm rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                      >
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                          <svg
+                            class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 16"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                            />
+                          </svg>
+                          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span class="font-semibold">Click to upload</span>{" "}
+                            your QR Code
+                          </p>
+                          <p class="text-xs text-gray-500 dark:text-gray-400">
+                            PNG, or JPG allowed only
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          id="file"
+                          onChange={handleUpload}
+                          disabled={uploading}
+                          class="hidden"
+                        />
+                      </label>
+                    </div>
+                  </>
+                ) : (
+                  <div className="border border-slate-200 p-4 rounded-lg bg-white flex justify-between items-end">
+                    <Image src={imageUrl} width={300} height={300} />
+                    <div className="w-6/12">
+                      <p>
+                        If you want to replace the image you need to remove it
+                        first and then upload a new image
+                      </p>
+                      <button
+                        onClick={removeImage}
+                        className="bg-primary p-4 mt-2 w-full flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow"
+                      >
+                        Remove Image
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               {/* Toggle buttons */}
               <div className="flex justify-between">
