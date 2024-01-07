@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "s2.coinmarketcap.com",
       },
+      {
+        protocol: "https",
+        hostname: "emyotefstnyjryixraib.supabase.co",
+      },
     ],
   },
 };
