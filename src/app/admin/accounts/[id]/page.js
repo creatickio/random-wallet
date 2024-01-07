@@ -105,11 +105,6 @@ export default function Profile() {
 
   // Change status of the withdraw
   async function changeWithdrawStatus() {
-    console.log("Current Withdraw Status", currentWithdrawStatus);
-    console.log("Current Withdraw Id", currentWithdrawId);
-    console.log("New Withdraw Status", newWithdrawStatus);
-    console.log("Current Withdraw Amount", currentWithdrawAmount);
-
     const supabase = createClientComponentClient();
     const updates = {
       id: currentWithdrawId,
@@ -291,6 +286,7 @@ export default function Profile() {
       setWithdrawEnabled(user.withdrawEnabled);
       setTradeEnabled(user.tradeEnabled);
       setUserVerifiedEnabled(user.isVerified);
+      setImageUrl(user.qr_code_url);
     }
     fetchData();
   }, [router.id]);
@@ -352,11 +348,6 @@ export default function Profile() {
 
   // Change status of the deposit
   async function changeDepositStatus() {
-    console.log("Current Deposit Status", currentDepositStatus);
-    console.log("Current Deposit Id", currentDepositId);
-    console.log("New Deposit Status", newDepositStatus);
-    console.log("Current Deposit Amount", currentDepositAmount);
-
     const supabase = createClientComponentClient();
     const updates = {
       id: currentDepositId,
@@ -443,8 +434,6 @@ export default function Profile() {
     }
     convertBtcToCurrency();
   }, [currency]);
-
-  console.log(btcPrice);
 
   function getCovertedPrice() {
     if (currency === "EUR") {
@@ -631,7 +620,11 @@ export default function Profile() {
         <div className="w-6/12 shrink-0">
           <h2 className="font-regular flex gap-[10px] text-5xl text-darkBlack tracking-tighter">
             Balance in {currency}{" "}
-            <span className="font-bold">{btcPrice && getCovertedPrice()}</span>
+            <span className="font-bold">
+              {btcPrice && getCovertedPrice()
+                ? btcPrice && getCovertedPrice()
+                : "..."}
+            </span>
           </h2>
         </div>
       </div>
@@ -886,7 +879,7 @@ export default function Profile() {
                   </>
                 ) : (
                   <div className="border border-slate-200 p-4 rounded-lg bg-white flex justify-between items-end">
-                    <Image src={imageUrl} width={300} height={300} />
+                    <Image src={imageUrl} width={250} height={250} />
                     <div className="w-6/12">
                       <p>
                         If you want to replace the image you need to remove it
