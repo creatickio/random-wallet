@@ -156,7 +156,6 @@ function UserDeposit() {
           </button>
         </div>
         <div className="flex flex-col items-center md:flex-row gap-8 mt-8">
-          {/* TODO: Fetch the QR code from database */}
           {userQRCode || adminQRCode ? (
             <div className="w-full flex items-center justify-center lg:w-[400px]">
               {userQRCode ? (
