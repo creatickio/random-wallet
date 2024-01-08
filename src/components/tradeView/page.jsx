@@ -2,8 +2,13 @@
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import LiveChart from "../chart/page";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, registerables } from "chart.js"; // Import Chart.js
+
+ChartJS.register(...registerables); // Register all available scales and plugins
 
 function TradeViewComp() {
   let [isOpen, setIsOpen] = useState(false);
@@ -17,8 +22,10 @@ function TradeViewComp() {
   const [percentage, setPercentage] = useState();
   const [outcome, setOutcome] = useState();
 
-  console.log("Percentage", percentage);
-  console.log("Outcome", outcome);
+  console.log("Trade Option: ", tradeOption);
+  console.log("Leverage Options: ", leverageOptions);
+  // console.log("Min Value: ", minValue);
+  // console.log("Max Value: ", maxValue);
 
   const router = useParams();
   const supabase = createClientComponentClient();
@@ -51,6 +58,75 @@ function TradeViewComp() {
   function openModal() {
     setIsOpen(true);
   }
+
+  const [minValue, setMinValue] = useState();
+  const [maxValue, setMaxValue] = useState();
+
+  // Chart minimum and maximum
+  useEffect(() => {
+    if (leverageOptions) {
+      if (leverageOptions === "x2") {
+        setMinValue(-100);
+        setMaxValue(200);
+      } else if (leverageOptions === "x5") {
+        setMinValue(-100);
+        setMaxValue(500);
+      } else {
+        setMinValue(-100);
+        setMaxValue(1000);
+      }
+    } else {
+      if (tradeOption === "standard") {
+        setMinValue(-10);
+        setMaxValue(10);
+      } else if (tradeOption === "ai") {
+        setMinValue(-50);
+        setMaxValue(100);
+      }
+    }
+  }, [leverageOptions, tradeOption, minValue, maxValue]);
+
+  // Chart functionality
+  // const [data, setData] = useState({
+  //   labels: Array.from({ length: 10 }, (_, i) => i + 1),
+  //   datasets: [
+  //     {
+  //       label: "Live Chart",
+  //       data: Array.from(
+  //         { length: 10 },
+  //         () => Math.random() * (maxValue - minValue) + minValue
+  //       ),
+  //       backgroundColor: "#FFD100",
+  //       borderColor: "#FFD100",
+  //       borderWidth: 2,
+  //     },
+  //   ],
+  // });
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setData((prevData) => {
+  //       let newData = { ...prevData };
+  //       let lastPoint =
+  //         newData.datasets[0].data[newData.datasets[0].data.length - 1];
+
+  //       // Check if minValue and maxValue are available
+  //       if (minValue !== undefined && maxValue !== undefined) {
+  //         let nextPoint = lastPoint + Math.random() * 40 - 20;
+  //         if (nextPoint < minValue) nextPoint = minValue;
+  //         if (nextPoint > maxValue) nextPoint = maxValue;
+
+  //         newData.datasets[0].data.shift();
+  //         newData.datasets[0].data.push(nextPoint);
+  //       }
+
+  //       return newData;
+  //     });
+  //   }, 5000);
+
+  //   return () => clearInterval(interval);
+  // }, [minValue, maxValue]);
+
   return (
     <div className="max-w-[1172px] mx-auto flex flex-col gap-8 md:gap-16 pt-8">
       <h2 className="text-[32px] md:text-[64px] text-center md:text-left font-medium tracking-tighter text-darkBlack">
@@ -141,11 +217,13 @@ function TradeViewComp() {
               {tradeStatus === "close" ? "Trade is closed" : "Stop the trade"}
             </button>
           </div>
-          {tradeStatus === "open" ? (
+          {tradeStatus === "open" && (
             <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-col gap-8">
-              <h2>Graph here</h2>
+              <LiveChart minValue={minValue} maxValue={maxValue} />
             </div>
-          ) : (
+          )}
+
+          {tradeStatus === "close" && (
             <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-row gap-8">
               {/* Percentage */}
               <div className="inline-flex border border-border rounded-[4px] w-full bg-white justify-between">
