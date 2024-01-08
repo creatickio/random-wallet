@@ -14,6 +14,11 @@ function TradeViewComp() {
   const [profile, setProfile] = useState("");
   const [tradeOption, setTradeOption] = useState("");
   const [tradeStatus, setTradeStatus] = useState("");
+  const [percentage, setPercentage] = useState();
+  const [outcome, setOutcome] = useState();
+
+  console.log("Percentage", percentage);
+  console.log("Outcome", outcome);
 
   const router = useParams();
   const supabase = createClientComponentClient();
@@ -32,6 +37,8 @@ function TradeViewComp() {
       setProfile(tradeInfo.profile);
       setTradeOption(tradeInfo.trade_option);
       setTradeStatus(tradeInfo.trade_status);
+      setPercentage(tradeInfo.percentage);
+      setOutcome(tradeInfo.outcome);
     }
     fetchData();
   }, [supabase, router.id]);
@@ -134,9 +141,32 @@ function TradeViewComp() {
               {tradeStatus === "close" ? "Trade is closed" : "Stop the trade"}
             </button>
           </div>
-          <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-col gap-8">
-            <h2>Graph here</h2>
-          </div>
+          {tradeStatus === "open" ? (
+            <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-col gap-8">
+              <h2>Graph here</h2>
+            </div>
+          ) : (
+            <div className="bg-[#F4F4F4] w-full h-full rounded-2xl p-8 flex flex-row gap-8">
+              {/* Percentage */}
+              <div className="inline-flex border border-border rounded-[4px] w-full bg-white justify-between">
+                <p className="p-4">
+                  {outcome > 0 ? "Percentage gain" : "Percentage lost"}
+                </p>
+                <p className="p-4 font-bold bg-border">
+                  {percentage ? `${percentage} %` : "0.0 %"}
+                </p>
+              </div>
+              {/* Outcome */}
+              <div className="inline-flex border border-border rounded-[4px] w-full bg-white justify-between">
+                <p className="p-4">
+                  {outcome > 0 ? "Total gain" : "Total lost"}
+                </p>
+                <p className="p-4 font-bold bg-border">
+                  {outcome ? `${outcome.toFixed(4)} BTC` : "0.0 BTC"}
+                </p>
+              </div>
+            </div>
+          )}
           {/* Modal */}
           <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={closeModal}>
