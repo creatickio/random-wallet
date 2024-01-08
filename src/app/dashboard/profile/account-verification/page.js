@@ -10,14 +10,15 @@ export default async function AccountVerification() {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const { data } = await supabase
-    .from("profile")
-    .select("*")
-    .eq("id", session.user.id);
 
   if (!session) {
     redirect("/signin");
   }
+
+  const { data } = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", session.user.id);
 
   const user = data[0];
   const isVerified = user.isVerified;

@@ -13,14 +13,16 @@ export default async function AccountsAdmin() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // console.log("session", session.user.id);
+  if (!session) {
+    redirect("/signin");
+  }
 
   const { data } = await supabase
     .from("admin")
     .select("*")
     .eq("id", session.user.id);
 
-  // console.log("data", data);
+  // check if admin
   if (!data.length) {
     redirect("/dashboard");
   }

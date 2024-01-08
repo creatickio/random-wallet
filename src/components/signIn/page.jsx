@@ -28,7 +28,18 @@ function SignIn() {
         data: { session },
       } = await supabase.auth.getSession();
       if (session) {
-        router.push("/dashboard");
+        const { data } = await supabase
+          .from("admin")
+          .select("*")
+          .eq("id", session.user.id);
+        // check if admin
+        if (data.length) {
+          router.push("/admin");
+        }
+
+        if (!data.length) {
+          router.push("/dashboard");
+        }
       }
     };
     getSession();

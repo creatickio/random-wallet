@@ -11,14 +11,15 @@ export default async function Trade() {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const { data } = await supabase
-    .from("profile")
-    .select("*")
-    .eq("id", session.user.id);
 
   if (!session) {
     redirect("/signin");
   }
+
+  const { data } = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", session.user.id);
 
   const { data: trades } = await supabase
     .from("trade")

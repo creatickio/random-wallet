@@ -11,14 +11,15 @@ export default async function TradeView() {
     data: { session },
   } = await supabase.auth.getSession();
 
+  if (!session) {
+    redirect("/signin");
+  }
+
   const { data } = await supabase
     .from("profile")
     .select("*")
     .eq("id", session.user.id);
 
-  if (!session) {
-    redirect("/signin");
-  }
   const user = data[0];
   return (
     <div className="flex flex-col gap-2 p-2">

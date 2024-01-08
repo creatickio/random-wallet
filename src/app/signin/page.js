@@ -1,10 +1,31 @@
 import Image from "next/image";
 import SignIn from "@/components/signIn/page";
-import IPAddress from "@/components/ipAddress/page";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import React from "react";
+import { redirect } from "next/navigation";
 
-function Signin() {
-  const userIP = IPAddress();
-  // console.log("User IP Address:", userIP);
+export default async function Signin() {
+  const supabase = createServerComponentClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session) {
+    const { data } = await supabase
+      .from("admin")
+      .select("*")
+      .eq("id", session.user.id);
+    // check if admin
+    if (data.length) {
+      redirect("/admin");
+    }
+
+    if (!data.length) {
+      redirect("/dashboard");
+    }
+  }
+
   return (
     <div className="flex">
       {/* Form */}
@@ -23,5 +44,3 @@ function Signin() {
     </div>
   );
 }
-
-export default Signin;

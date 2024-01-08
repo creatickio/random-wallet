@@ -10,14 +10,25 @@ export default async function TradeAdmin() {
   const {
     data: { session },
   } = await supabase.auth.getSession();
-  const { data } = await supabase
-    .from("profile")
-    .select("*")
-    .eq("id", session.user.id);
 
   if (!session) {
     redirect("/signin");
   }
+
+  const { data: admin } = await supabase
+    .from("admin")
+    .select("*")
+    .eq("id", session.user.id);
+
+  // check if admin
+  if (!admin.length) {
+    redirect("/dashboard");
+  }
+
+  const { data } = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", session.user.id);
 
   const { data: trades } = await supabase.from("trade").select("*");
   const { data: users } = await supabase.from("profile").select("*");

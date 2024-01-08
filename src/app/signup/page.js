@@ -15,6 +15,30 @@ function Signup() {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
+  useEffect(() => {
+    const supabase = createClientComponentClient();
+    const getSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from("admin")
+          .select("*")
+          .eq("id", session.user.id);
+        // check if admin
+        if (data.length) {
+          router.push("/admin");
+        }
+
+        if (!data.length) {
+          router.push("/dashboard");
+        }
+      }
+    };
+    getSession();
+  }, [router]);
+
   async function SignUpNewUser(e) {
     e.preventDefault();
     const { data: user, error } = await supabase.auth.signUp({

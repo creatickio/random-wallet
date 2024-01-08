@@ -1,8 +1,29 @@
 import AdminNav from "@/components/admin/nav/page";
 import Settings from "@/components/admin/settings/page";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import React from "react";
+import { redirect } from "next/navigation";
 
-function SettingsAdmin() {
+export default async function SettingsAdmin() {
+  const supabase = createServerComponentClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/signin");
+  }
+
+  const { data } = await supabase
+    .from("admin")
+    .select("*")
+    .eq("id", session.user.id);
+
+  // check if admin
+  if (!data.length) {
+    redirect("/dashboard");
+  }
   return (
     <div>
       <div className="flex flex-col gap-2 p-2">
@@ -26,5 +47,3 @@ function SettingsAdmin() {
     </div>
   );
 }
-
-export default SettingsAdmin;

@@ -12,16 +12,15 @@ export default async function AccountDetails() {
     data: { session },
   } = await supabase.auth.getSession();
 
+  if (!session) {
+    redirect("/signin");
+  }
+
   const { data } = await supabase
     .from("profile")
     .select("*")
     .eq("id", session.user.id);
 
-  console.log("TEST", data);
-
-  if (!session) {
-    redirect("/signin");
-  }
   const user = data[0];
   return (
     <div className="flex flex-col gap-2 p-2">

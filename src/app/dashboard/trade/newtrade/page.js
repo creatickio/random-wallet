@@ -10,14 +10,9 @@ export default async function NewTrade() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const { data } = await supabase
-    .from("profile")
-    .select("*")
-    .eq("id", session.user.id);
-
   if (!session) {
     redirect("/signin");
   }
-  const user = data[0];
+
   return <StandardTrade />;
 }
