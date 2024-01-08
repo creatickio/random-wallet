@@ -9,7 +9,7 @@ function ModifyAITrade({ selectedTradeID, selectedUserTradeID, onSuccess }) {
   const [email, setEmail] = useState("");
   const [btcAddress, setBtcAddress] = useState("");
   const [balance, setBalance] = useState();
-
+  const [amountError, setAmountError] = useState("");
   const [amount, setAmount] = useState();
   const [tradeOption, setTradeOption] = useState("");
   const [percentage, setPercentage] = useState(0);
@@ -125,138 +125,155 @@ function ModifyAITrade({ selectedTradeID, selectedUserTradeID, onSuccess }) {
     }
   }
 
+  // Amount error
+  useEffect(() => {
+    if (percentage > 100 || percentage < -50) {
+      setAmountError("Percentage must be between -50% and +100%");
+    } else {
+      setAmountError("");
+    }
+  }, [percentage]);
+
   return (
-    <div className="flex flex-col gap-8">
-      <form className="flex flex-col gap-8">
-        <div className="flex flex-col gap-[10px]">
-          <p className="text-xl font-bold text-darkBlack">Account details</p>
-
-          <div className="flex gap-[10px]">
-            <input
-              className="w-full p-4 border border-border rounded-[4px]"
-              type="text"
-              required
-              value={firstName}
-              placeholder="First name"
-            />
-            <input
-              className="w-full p-4 border border-border rounded-[4px]"
-              type="text"
-              required
-              value={lastName}
-              placeholder="Last name"
-            />
-          </div>
-          <div className="flex gap-[10px]">
-            <input
-              className="w-full p-4 border border-border rounded-[4px]"
-              type="email"
-              required
-              value={email}
-              placeholder="Email"
-            />
-            <input
-              className="w-full p-4 border border-border rounded-[4px]"
-              type="text"
-              required
-              value={btcAddress}
-              placeholder="Bitcoin Address"
-            />
-          </div>
-          <div className="flex gap-[10px]">
-            <input
-              className="w-full p-4 border border-border rounded-[4px]"
-              type="text"
-              required
-              value={`${amount} BTC`}
-              placeholder="Amount"
-            />
-            <input
-              className="w-full p-4 border border-border rounded-[4px] capitalize"
-              type="text"
-              required
-              value={`${tradeOption} trade`}
-              placeholder="Trade Option"
-            />
-          </div>
-          {/* Divider */}
-          <div className="w-full bg-gray h-px my-6"></div>
-
-          {/* Settings */}
-          <div>
-            <p className="text-xl font-bold text-darkBlack">Settings</p>
-            <p className="text-sm">
-              Enter the amount in plus or minus and stop the trade.
-            </p>
-          </div>
-
-          <div className="flex gap-[10px]">
-            {/* Entered */}
-            <div className="inline-flex border border-border rounded-[4px]">
-              <p className="p-4">Entered</p>
-              <p className="p-4 font-bold bg-border">{amount} BTC</p>
-            </div>
-            {/* Outcome */}
-            <div className="inline-flex border border-border rounded-[4px]">
-              <p className="p-4">Outcome</p>
-              <p className="p-4 font-bold bg-border">
-                {outcome ? `${outcome.toFixed(4)} BTC` : "0.0 BTC"}
-              </p>
-            </div>
-            {/* Total */}
-            <div className="inline-flex border border-border rounded-[4px]">
-              <p className="p-4">Total</p>
-              <p className="p-4 font-bold bg-border">
-                {total ? `${total.toFixed(4)} BTC` : "0.0 BTC"}
-              </p>
-            </div>
-          </div>
-
-          {/* Slider functionality */}
-          <div className="flex gap-6 items-center">
-            <div class="relative w-full">
-              <label for="labels-range-input" class="sr-only">
-                Labels range
-              </label>
-              <input
-                id="labels-range-input"
-                type="range"
-                value={percentage}
-                onChange={(e) => {
-                  {
-                    setPercentage(e.target.value);
-                  }
-                }}
-                min="-50"
-                max="100"
-                step="0.1"
-                class="w-full h-px mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer bg-darkBlack [&::-webkit-slider-thumb]:bg-primary"
-              />
-              <span class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-[7px]">
-                -50%
-              </span>
-              <span class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-[7px]">
-                +100%
-              </span>
-            </div>
-            <input
-              type="text"
-              value={percentage}
-              className="w-32 p-4 border border-border rounded-[4px]"
-              onChange={(e) => {
-                setPercentage(e.target.value);
-              }}
-            />
-            <button
-              onClick={updateAITrade}
-              className="bg-primary py-4 px-6 mt-2 flex shrink-0 items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow"
-            >
-              Stop the trade
-            </button>
-          </div>
-        </div>
-      </form>
+    <div>
       <ToastContainer />
+      <div className="flex flex-col gap-8">
+        <form className="flex flex-col gap-8">
+          <div className="flex flex-col gap-[10px]">
+            <p className="text-xl font-bold text-darkBlack">Account details</p>
+
+            <div className="flex gap-[10px]">
+              <input
+                className="w-full p-4 border border-border rounded-[4px]"
+                type="text"
+                required
+                value={firstName}
+                placeholder="First name"
+              />
+              <input
+                className="w-full p-4 border border-border rounded-[4px]"
+                type="text"
+                required
+                value={lastName}
+                placeholder="Last name"
+              />
+            </div>
+            <div className="flex gap-[10px]">
+              <input
+                className="w-full p-4 border border-border rounded-[4px]"
+                type="email"
+                required
+                value={email}
+                placeholder="Email"
+              />
+              <input
+                className="w-full p-4 border border-border rounded-[4px]"
+                type="text"
+                required
+                value={btcAddress}
+                placeholder="Bitcoin Address"
+              />
+            </div>
+            <div className="flex gap-[10px]">
+              <input
+                className="w-full p-4 border border-border rounded-[4px]"
+                type="text"
+                required
+                value={`${amount} BTC`}
+                placeholder="Amount"
+              />
+              <input
+                className="w-full p-4 border border-border rounded-[4px] capitalize"
+                type="text"
+                required
+                value={`${tradeOption} trade`}
+                placeholder="Trade Option"
+              />
+            </div>
+            {/* Divider */}
+            <div className="w-full bg-gray h-px my-6"></div>
+
+            {/* Settings */}
+            <div>
+              <p className="text-xl font-bold text-darkBlack">Settings</p>
+              <p className="text-sm">
+                Enter the amount in plus or minus and stop the trade.
+              </p>
+            </div>
+
+            <div className="flex gap-[10px]">
+              {/* Entered */}
+              <div className="inline-flex border border-border rounded-[4px]">
+                <p className="p-4">Entered</p>
+                <p className="p-4 font-bold bg-border">{amount} BTC</p>
+              </div>
+              {/* Outcome */}
+              <div className="inline-flex border border-border rounded-[4px]">
+                <p className="p-4">Outcome</p>
+                <p className="p-4 font-bold bg-border">
+                  {outcome ? `${outcome.toFixed(4)} BTC` : "0.0 BTC"}
+                </p>
+              </div>
+              {/* Total */}
+              <div className="inline-flex border border-border rounded-[4px]">
+                <p className="p-4">Total</p>
+                <p className="p-4 font-bold bg-border">
+                  {total ? `${total.toFixed(4)} BTC` : "0.0 BTC"}
+                </p>
+              </div>
+            </div>
+
+            {/* Slider functionality */}
+            <div className="flex gap-6 items-center">
+              <div class="relative w-full">
+                <label for="labels-range-input" class="sr-only">
+                  Labels range
+                </label>
+                <input
+                  id="labels-range-input"
+                  type="range"
+                  value={percentage}
+                  onChange={(e) => {
+                    {
+                      setPercentage(e.target.value);
+                    }
+                  }}
+                  min="-50"
+                  max="100"
+                  step="0.1"
+                  class="w-full h-px mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer bg-darkBlack [&::-webkit-slider-thumb]:bg-primary"
+                />
+                <span class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-[7px]">
+                  -50%
+                </span>
+                <span class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-[7px]">
+                  +100%
+                </span>
+              </div>
+              <input
+                type="text"
+                value={percentage}
+                className="w-32 p-4 border border-border rounded-[4px]"
+                onChange={(e) => {
+                  setPercentage(e.target.value);
+                }}
+              />
+              <button
+                onClick={updateAITrade}
+                disabled={amountError}
+                className="bg-primary py-4 px-6 mt-2 flex shrink-0 items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow disabled:bg-darkBlack/20 disabled:cursor-not-allowed"
+              >
+                Stop the trade
+              </button>
+            </div>
+            {amountError && (
+              <p className="bg-red-600 text-white w-full text-center p-4 rounded-xl">
+                {amountError}
+              </p>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
