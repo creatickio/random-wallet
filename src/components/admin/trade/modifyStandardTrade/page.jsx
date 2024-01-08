@@ -1,11 +1,18 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function ModifyStandardTrade({ selectedTradeID, selectedUserTradeID }) {
+function ModifyStandardTrade({
+  selectedTradeID,
+  selectedUserTradeID,
+  onSuccess,
+}) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [btcAddress, setBtcAddress] = useState("");
+  const [balance, setBalance] = useState();
 
   const [amount, setAmount] = useState();
   const [tradeOption, setTradeOption] = useState("");
@@ -17,6 +24,15 @@ function ModifyStandardTrade({ selectedTradeID, selectedUserTradeID }) {
   console.log("Percentage:", percentage);
   console.log("Outcome:", outcome);
   console.log("Total:", total);
+  console.log("Balance:", balance);
+
+  if (percentage > 0) {
+    const newBalance = balance + amount;
+    console.log("New Balance:", balance + total);
+  } else {
+    const newBalance = balance - amount;
+    console.log("New Balance:", balance - total);
+  }
 
   const supabase = createClientComponentClient();
 
@@ -43,12 +59,13 @@ function ModifyStandardTrade({ selectedTradeID, selectedUserTradeID }) {
       setLastName(data[0].last_name);
       setEmail(data[0].email);
       setBtcAddress(data[0].btcAddress);
+      setBalance(data[0].balance);
     }
     fetchUser();
   }, []);
 
+  // Calculate outcome and total whenever percentage changes
   useEffect(() => {
-    // Calculate outcome and total whenever percentage changes
     const calculateValues = () => {
       const percentageValue = (percentage / 100) * amount + amount - amount;
       console.log("Percentage value:", percentageValue);
@@ -61,6 +78,72 @@ function ModifyStandardTrade({ selectedTradeID, selectedUserTradeID }) {
     // Trigger calculation initially and whenever percentage changes
     calculateValues();
   }, [amount, percentage]);
+
+  //   Update the Standard Trade
+  async function updateStandardTrade(event) {
+    event.preventDefault();
+    const { data: user } = await supabase
+      .from("profile")
+      .select("*")
+      .eq("id", selectedUserTradeID);
+
+    const updates = {
+      id: selectedTradeID,
+      profile: selectedUserTradeID,
+      trade_status: "close",
+      trade_option: "standard",
+      percentage: percentage,
+      outcome: outcome,
+    };
+
+    const { error } = await supabase.from("trade").upsert(updates);
+
+    if (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      toast.success("Standard Trade updated successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      if (percentage > 0) {
+        const newBalance = balance + total;
+        const balanceUpdate = {
+          id: selectedUserTradeID,
+          balance: newBalance,
+        };
+        const { error: error3 } = await supabase
+          .from("profile")
+          .upsert(balanceUpdate);
+      } else {
+        const newBalance = balance - total;
+        const balanceUpdate = {
+          id: selectedUserTradeID,
+          balance: newBalance,
+        };
+        const { error: error3 } = await supabase
+          .from("profile")
+          .upsert(balanceUpdate);
+      }
+      setTimeout(() => {
+        onSuccess();
+      }, 4000);
+    }
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -184,12 +267,16 @@ function ModifyStandardTrade({ selectedTradeID, selectedUserTradeID }) {
                 setPercentage(e.target.value);
               }}
             />
-            <button className="bg-primary py-4 px-6 mt-2 flex items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow">
-              Stop
+            <button
+              onClick={updateStandardTrade}
+              className="bg-primary py-4 px-6 mt-2 flex shrink-0 items-center justify-center rounded-full duration-300 transition-all hover:bg-yellow"
+            >
+              Stop the trade
             </button>
           </div>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

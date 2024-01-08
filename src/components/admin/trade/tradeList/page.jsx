@@ -38,6 +38,15 @@ function TradeList() {
   function openModal() {
     setIsOpen(true);
   }
+
+  async function onSuccessTrade() {
+    closeModal();
+    const { data: trades } = await supabase.from("trade").select("*");
+    const { data: users } = await supabase.from("profile").select("*");
+
+    setTrades(trades);
+    setUsers(users);
+  }
   return (
     <div>
       {/* active trades */}
@@ -392,16 +401,19 @@ function TradeList() {
                     <ModifyLeverageTrade
                       selectedTradeID={selectedTradeID}
                       selectedUserTradeID={selectedUserTradeID}
+                      onSuccess={() => onSuccessTrade()}
                     />
                   ) : selectedTradeOption === "ai" ? (
                     <ModifyAITrade
                       selectedTradeID={selectedTradeID}
                       selectedUserTradeID={selectedUserTradeID}
+                      onSuccess={() => onSuccessTrade()}
                     />
                   ) : (
                     <ModifyStandardTrade
                       selectedTradeID={selectedTradeID}
                       selectedUserTradeID={selectedUserTradeID}
+                      onSuccess={() => onSuccessTrade()}
                     />
                   )}
 
