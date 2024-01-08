@@ -20,20 +20,6 @@ function ModifyStandardTrade({
   const [outcome, setOutcome] = useState();
   const [total, setTotal] = useState();
 
-  console.log("Amount:", amount);
-  console.log("Percentage:", percentage);
-  console.log("Outcome:", outcome);
-  console.log("Total:", total);
-  console.log("Balance:", balance);
-
-  if (percentage > 0) {
-    const newBalance = balance + amount;
-    console.log("New Balance:", balance + total);
-  } else {
-    const newBalance = balance - amount;
-    console.log("New Balance:", balance - total);
-  }
-
   const supabase = createClientComponentClient();
 
   useEffect(() => {
@@ -42,7 +28,6 @@ function ModifyStandardTrade({
         .from("trade")
         .select("*")
         .eq("id", selectedTradeID);
-      console.log("Trade:", data);
       setAmount(data[0].amount);
       setTradeOption(data[0].trade_option);
     }
@@ -68,7 +53,6 @@ function ModifyStandardTrade({
   useEffect(() => {
     const calculateValues = () => {
       const percentageValue = (percentage / 100) * amount + amount - amount;
-      console.log("Percentage value:", percentageValue);
       setOutcome(percentageValue);
       // Calculate the difference between amount and outcome
       const difference = amount + percentageValue;
